@@ -1,5 +1,6 @@
 'use client';
 
+import { splitText } from '@/utils/splitText';
 import { useState } from 'react';
 
 export default function DocumentForm() {
@@ -12,13 +13,16 @@ export default function DocumentForm() {
         setLoading(true);
 
         try {
+            const chunks = await splitText(content);
+            console.log(chunks);
+
             const res = await fetch('/api/documents', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
                 },
                 body: JSON.stringify({
-                    content: [content],
+                    content: chunks.map((chunk) => chunk.pageContent),
                 }),
             });
 
@@ -39,7 +43,7 @@ export default function DocumentForm() {
     return (
         <form
             onSubmit={handleSubmit}
-            className="max-w-xl mx-auto mt-20 space-y-4"
+            className="container mx-auto mt-20 space-y-4"
         >
             <textarea
                 rows={8}

@@ -3,7 +3,7 @@ import SearchForm from '@/components/form/SearchForm';
 
 export default async function HomePage() {
     return (
-        <div className="py-20">
+        <div className="py-20 flex px-10 gap-3">
             <DocumentForm />
             <SearchForm />
         </div>

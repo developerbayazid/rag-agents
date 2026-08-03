@@ -10,16 +10,31 @@ interface Result {
 
 export default function SearchForm() {
     const [question, setQuestion] = useState('');
-    const [results, setResults] = useState<Result[]>([]);
+    const [results, setResults] = useState('');
     const [loading, setLoading] = useState(false);
+    const [messages, setMessages] = useState<
+        {
+            role: 'user' | 'assistant';
+            content: string;
+        }[]
+    >([]);
 
     async function handleSearch(e: React.FormEvent) {
         e.preventDefault();
 
         if (!question.trim()) return;
 
+        const userMessage = {
+            role: 'user' as const,
+            content: question,
+        };
+
+        const updatedMessages = [...messages, userMessage];
+
+        setMessages(updatedMessages);
+
         setLoading(true);
-        setResults([]);
+        setResults('');
 
         try {
             const response = await fetch('/api/search', {
@@ -29,13 +44,21 @@ export default function SearchForm() {
                 },
                 body: JSON.stringify({
                     question,
+                    messages: updatedMessages,
                 }),
             });
 
             const data = await response.json();
 
             if (response.ok) {
-                setResults(data);
+                setResults(data.answer);
+                setMessages([
+                    ...updatedMessages,
+                    {
+                        role: 'assistant',
+                        content: data.answer,
+                    },
+                ]);
                 console.log(data);
             } else {
                 console.error(data.error);
@@ -48,7 +71,7 @@ export default function SearchForm() {
     }
 
     return (
-        <div className="max-w-3xl mx-auto mt-20">
+        <div className="container mx-auto mt-20">
             <form onSubmit={handleSearch} className="space-y-4">
                 <textarea
                     value={question}
@@ -67,7 +90,7 @@ export default function SearchForm() {
             </form>
 
             <div className="mt-10 space-y-4">
-                {results.map((item) => (
+                {/* {results.map((item) => (
                     <div key={item.id} className="border rounded p-4">
                         <p className="text-sm text-gray-500">
                             Similarity: {(item.similarity * 100).toFixed(2)}%
@@ -75,7 +98,13 @@ export default function SearchForm() {
 
                         <p className="mt-2">{item.content}</p>
                     </div>
-                ))}
+                ))} */}
+
+                {results && (
+                    <div className="border rounded p-4">
+                        <p className="text-sm text-gray-800">{results}</p>
+                    </div>
+                )}
             </div>
         </div>
     );

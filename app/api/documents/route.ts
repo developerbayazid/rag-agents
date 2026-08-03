@@ -12,29 +12,25 @@ export async function POST(request: NextRequest) {
         );
     }
 
-    await Promise.all(
+    const documents = await Promise.all(
         content.map(async (textChunk: string) => {
             const embeddingResponse = await openai.embeddings.create({
                 model: 'text-embedding-3-small',
                 input: textChunk,
             });
 
-            const emData = {
+            return {
                 content: textChunk,
                 embedding: embeddingResponse.data[0].embedding,
             };
-
-            const { error } = await supabaseAdmin
-                .from('documents')
-                .insert(emData);
-            if (error) {
-                return NextResponse.json(
-                    { error: error.message },
-                    { status: 500 },
-                );
-            }
         }),
     );
+
+    const { error } = await supabaseAdmin.from('documents').insert(documents);
+
+    if (error) {
+        NextResponse.json({ error: error.message });
+    }
 
     return NextResponse.json({ message: 'Thanks for submitting the data' });
 }
