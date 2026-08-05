@@ -1,6 +1,6 @@
 'use client';
-
 import { useState } from 'react';
+import ReactMarkdown from 'react-markdown';
 
 interface Result {
     id: number;
@@ -35,6 +35,7 @@ export default function SearchForm() {
 
         setLoading(true);
         setResults('');
+        setQuestion('');
 
         try {
             const response = await fetch('/api/search', {
@@ -101,8 +102,10 @@ export default function SearchForm() {
                 ))} */}
 
                 {results && (
-                    <div className="border rounded p-4">
-                        <p className="text-sm text-gray-800">{results}</p>
+                    <div className="bg-green-100 p-4">
+                        <p className="text-sm text-gray-800">
+                            <ReactMarkdown>{results}</ReactMarkdown>
+                        </p>
                     </div>
                 )}
             </div>

@@ -1665,6 +1665,176 @@
       ],
       "security_labels": []
     },
+    "procedure:public.match_documents(extensions.vector,double precision,integer)": {
+      "schema": "public",
+      "name": "match_documents",
+      "kind": "f",
+      "return_type": "record",
+      "return_type_schema": "pg_catalog",
+      "language": "sql",
+      "security_definer": false,
+      "volatility": "s",
+      "parallel_safety": "u",
+      "execution_cost": 100,
+      "result_rows": 1000,
+      "is_strict": false,
+      "leakproof": false,
+      "returns_set": true,
+      "argument_count": 3,
+      "argument_default_count": 0,
+      "argument_names": [
+        "query_embedding",
+        "match_threshold",
+        "match_count",
+        "id",
+        "content",
+        "similarity"
+      ],
+      "argument_types": [
+        "extensions.vector",
+        "double precision",
+        "integer"
+      ],
+      "all_argument_types": [
+        "extensions.vector",
+        "double precision",
+        "integer",
+        "bigint",
+        "text",
+        "double precision"
+      ],
+      "argument_modes": [
+        "i",
+        "i",
+        "i",
+        "t",
+        "t",
+        "t"
+      ],
+      "argument_defaults": null,
+      "source_code": "\r\n  select\r\n    documents.id,\r\n    documents.content,\r\n    1 - (documents.embedding <=> query_embedding) as similarity\r\n  from documents\r\n  where 1 - (documents.embedding <=> query_embedding) > match_threshold\r\n  order by similarity desc\r\n  limit match_count;\r\n",
+      "binary_path": null,
+      "sql_body": null,
+      "definition": "CREATE OR REPLACE FUNCTION public.match_documents(query_embedding extensions.vector, match_threshold double precision, match_count integer)\n RETURNS TABLE(id bigint, content text, similarity double precision)\n LANGUAGE sql\n STABLE\n SET search_path TO 'public', 'extensions'\nAS $function$\r\n  select\r\n    documents.id,\r\n    documents.content,\r\n    1 - (documents.embedding <=> query_embedding) as similarity\r\n  from documents\r\n  where 1 - (documents.embedding <=> query_embedding) > match_threshold\r\n  order by similarity desc\r\n  limit match_count;\r\n$function$\n",
+      "config": [
+        "search_path=public, extensions"
+      ],
+      "owner": "postgres",
+      "comment": null,
+      "privileges": [
+        {
+          "grantee": "PUBLIC",
+          "privilege": "EXECUTE",
+          "grantable": false
+        },
+        {
+          "grantee": "postgres",
+          "privilege": "EXECUTE",
+          "grantable": false
+        },
+        {
+          "grantee": "anon",
+          "privilege": "EXECUTE",
+          "grantable": false
+        },
+        {
+          "grantee": "authenticated",
+          "privilege": "EXECUTE",
+          "grantable": false
+        },
+        {
+          "grantee": "service_role",
+          "privilege": "EXECUTE",
+          "grantable": false
+        }
+      ],
+      "security_labels": []
+    },
+    "procedure:public.match_movies(extensions.vector,double precision,integer)": {
+      "schema": "public",
+      "name": "match_movies",
+      "kind": "f",
+      "return_type": "record",
+      "return_type_schema": "pg_catalog",
+      "language": "sql",
+      "security_definer": false,
+      "volatility": "s",
+      "parallel_safety": "u",
+      "execution_cost": 100,
+      "result_rows": 1000,
+      "is_strict": false,
+      "leakproof": false,
+      "returns_set": true,
+      "argument_count": 3,
+      "argument_default_count": 0,
+      "argument_names": [
+        "query_embedding",
+        "match_threshold",
+        "match_count",
+        "id",
+        "content",
+        "similarity"
+      ],
+      "argument_types": [
+        "extensions.vector",
+        "double precision",
+        "integer"
+      ],
+      "all_argument_types": [
+        "extensions.vector",
+        "double precision",
+        "integer",
+        "bigint",
+        "text",
+        "double precision"
+      ],
+      "argument_modes": [
+        "i",
+        "i",
+        "i",
+        "t",
+        "t",
+        "t"
+      ],
+      "argument_defaults": null,
+      "source_code": "\r\n  select\r\n    movies.id,\r\n    movies.content,\r\n    1 - (movies.embedding <=> query_embedding) as similarity\r\n  from movies\r\n  where 1 - (movies.embedding <=> query_embedding) > match_threshold\r\n  order by similarity desc\r\n  limit match_count;\r\n",
+      "binary_path": null,
+      "sql_body": null,
+      "definition": "CREATE OR REPLACE FUNCTION public.match_movies(query_embedding extensions.vector, match_threshold double precision, match_count integer)\n RETURNS TABLE(id bigint, content text, similarity double precision)\n LANGUAGE sql\n STABLE\n SET search_path TO 'public', 'extensions'\nAS $function$\r\n  select\r\n    movies.id,\r\n    movies.content,\r\n    1 - (movies.embedding <=> query_embedding) as similarity\r\n  from movies\r\n  where 1 - (movies.embedding <=> query_embedding) > match_threshold\r\n  order by similarity desc\r\n  limit match_count;\r\n$function$\n",
+      "config": [
+        "search_path=public, extensions"
+      ],
+      "owner": "postgres",
+      "comment": null,
+      "privileges": [
+        {
+          "grantee": "PUBLIC",
+          "privilege": "EXECUTE",
+          "grantable": false
+        },
+        {
+          "grantee": "postgres",
+          "privilege": "EXECUTE",
+          "grantable": false
+        },
+        {
+          "grantee": "anon",
+          "privilege": "EXECUTE",
+          "grantable": false
+        },
+        {
+          "grantee": "authenticated",
+          "privilege": "EXECUTE",
+          "grantable": false
+        },
+        {
+          "grantee": "service_role",
+          "privilege": "EXECUTE",
+          "grantable": false
+        }
+      ],
+      "security_labels": []
+    },
     "procedure:realtime.\"cast\"(text,regtype)": {
       "schema": "realtime",
       "name": "\"cast\"",
@@ -1960,7 +2130,7 @@
       ],
       "security_labels": []
     },
-    "procedure:realtime.check_equality_op(realtime.equality_op,regtype,text,text,boolean)": {
+    "procedure:realtime.check_equality_op(realtime.equality_op,regtype,text,text)": {
       "schema": "realtime",
       "name": "check_equality_op",
       "kind": "f",
@@ -1968,36 +2138,34 @@
       "return_type_schema": "pg_catalog",
       "language": "plpgsql",
       "security_definer": false,
-      "volatility": "s",
+      "volatility": "i",
       "parallel_safety": "u",
       "execution_cost": 100,
       "result_rows": 0,
       "is_strict": false,
       "leakproof": false,
       "returns_set": false,
-      "argument_count": 5,
+      "argument_count": 4,
       "argument_default_count": 0,
       "argument_names": [
         "op",
         "type_",
         "val_1",
-        "val_2",
-        "negate"
+        "val_2"
       ],
       "argument_types": [
         "realtime.equality_op",
         "regtype",
         "text",
-        "text",
-        "boolean"
+        "text"
       ],
       "all_argument_types": [],
       "argument_modes": null,
       "argument_defaults": null,
-      "source_code": "\ndeclare\n    op_symbol text;\n    res boolean;\nbegin\n    -- IS DISTINCT FROM / IS NOT DISTINCT FROM: infix, both sides typed literals\n    if op = 'isdistinct' then\n        execute format(\n            'select %L::%s %s %L::%s',\n            val_1,\n            type_::text,\n            case when negate then 'IS NOT DISTINCT FROM' else 'IS DISTINCT FROM' end,\n            val_2,\n            type_::text\n        ) into res;\n        return res;\n    end if;\n\n    -- IS requires a keyword RHS (NULL, TRUE, FALSE, UNKNOWN), not a typed literal\n    if op = 'is' then\n        if val_2 not in ('null', 'true', 'false', 'unknown') then\n            raise exception 'invalid value for is filter: must be null, true, false, or unknown';\n        end if;\n        execute format(\n            'select %L::%s %s %s',\n            val_1,\n            type_::text,\n            case when negate then 'IS NOT' else 'IS' end,\n            upper(val_2)\n        ) into res;\n        return res;\n    end if;\n\n    op_symbol = case\n        when op = 'eq'    then '='\n        when op = 'neq'   then '!='\n        when op = 'lt'    then '<'\n        when op = 'lte'   then '<='\n        when op = 'gt'    then '>'\n        when op = 'gte'   then '>='\n        when op = 'in'    then '= any'\n        when op = 'like'   then 'LIKE'\n        when op = 'ilike'  then 'ILIKE'\n        when op = 'match'  then '~'\n        when op = 'imatch' then '~*'\n        else null\n    end;\n\n    if op_symbol is null then\n        raise exception 'unsupported equality operator: %', op::text;\n    end if;\n\n    execute format(\n        'select %L::%s %s (%L::%s)',\n        val_1,\n        type_::text,\n        op_symbol,\n        val_2,\n        case when op = 'in' then type_::text || '[]' else type_::text end\n    ) into res;\n\n    return case when negate then not res else res end;\nend;\n",
+      "source_code": "\n/*\nCasts *val_1* and *val_2* as type *type_* and check the *op* condition for truthiness\n*/\ndeclare\n    op_symbol text = (\n        case\n            when op = 'eq' then '='\n            when op = 'neq' then '!='\n            when op = 'lt' then '<'\n            when op = 'lte' then '<='\n            when op = 'gt' then '>'\n            when op = 'gte' then '>='\n            when op = 'in' then '= any'\n            else 'UNKNOWN OP'\n        end\n    );\n    res boolean;\nbegin\n    execute format(\n        'select %L::'|| type_::text || ' ' || op_symbol\n        || ' ( %L::'\n        || (\n            case\n                when op = 'in' then type_::text || '[]'\n                else type_::text end\n        )\n        || ')', val_1, val_2) into res;\n    return res;\nend;\n",
       "binary_path": null,
       "sql_body": null,
-      "definition": "CREATE OR REPLACE FUNCTION realtime.check_equality_op(op realtime.equality_op, type_ regtype, val_1 text, val_2 text, negate boolean)\n RETURNS boolean\n LANGUAGE plpgsql\n STABLE\nAS $function$\ndeclare\n    op_symbol text;\n    res boolean;\nbegin\n    -- IS DISTINCT FROM / IS NOT DISTINCT FROM: infix, both sides typed literals\n    if op = 'isdistinct' then\n        execute format(\n            'select %L::%s %s %L::%s',\n            val_1,\n            type_::text,\n            case when negate then 'IS NOT DISTINCT FROM' else 'IS DISTINCT FROM' end,\n            val_2,\n            type_::text\n        ) into res;\n        return res;\n    end if;\n\n    -- IS requires a keyword RHS (NULL, TRUE, FALSE, UNKNOWN), not a typed literal\n    if op = 'is' then\n        if val_2 not in ('null', 'true', 'false', 'unknown') then\n            raise exception 'invalid value for is filter: must be null, true, false, or unknown';\n        end if;\n        execute format(\n            'select %L::%s %s %s',\n            val_1,\n            type_::text,\n            case when negate then 'IS NOT' else 'IS' end,\n            upper(val_2)\n        ) into res;\n        return res;\n    end if;\n\n    op_symbol = case\n        when op = 'eq'    then '='\n        when op = 'neq'   then '!='\n        when op = 'lt'    then '<'\n        when op = 'lte'   then '<='\n        when op = 'gt'    then '>'\n        when op = 'gte'   then '>='\n        when op = 'in'    then '= any'\n        when op = 'like'   then 'LIKE'\n        when op = 'ilike'  then 'ILIKE'\n        when op = 'match'  then '~'\n        when op = 'imatch' then '~*'\n        else null\n    end;\n\n    if op_symbol is null then\n        raise exception 'unsupported equality operator: %', op::text;\n    end if;\n\n    execute format(\n        'select %L::%s %s (%L::%s)',\n        val_1,\n        type_::text,\n        op_symbol,\n        val_2,\n        case when op = 'in' then type_::text || '[]' else type_::text end\n    ) into res;\n\n    return case when negate then not res else res end;\nend;\n$function$\n",
+      "definition": "CREATE OR REPLACE FUNCTION realtime.check_equality_op(op realtime.equality_op, type_ regtype, val_1 text, val_2 text)\n RETURNS boolean\n LANGUAGE plpgsql\n IMMUTABLE\nAS $function$\n/*\nCasts *val_1* and *val_2* as type *type_* and check the *op* condition for truthiness\n*/\ndeclare\n    op_symbol text = (\n        case\n            when op = 'eq' then '='\n            when op = 'neq' then '!='\n            when op = 'lt' then '<'\n            when op = 'lte' then '<='\n            when op = 'gt' then '>'\n            when op = 'gte' then '>='\n            when op = 'in' then '= any'\n            else 'UNKNOWN OP'\n        end\n    );\n    res boolean;\nbegin\n    execute format(\n        'select %L::'|| type_::text || ' ' || op_symbol\n        || ' ( %L::'\n        || (\n            case\n                when op = 'in' then type_::text || '[]'\n                else type_::text end\n        )\n        || ')', val_1, val_2) into res;\n    return res;\nend;\n$function$\n",
       "config": null,
       "owner": "supabase_realtime_admin",
       "comment": null,
@@ -2040,7 +2208,7 @@
       ],
       "security_labels": []
     },
-    "procedure:realtime.check_equality_op(realtime.equality_op,regtype,text,text)": {
+    "procedure:realtime.check_equality_op(realtime.equality_op,regtype,text,text,boolean)": {
       "schema": "realtime",
       "name": "check_equality_op",
       "kind": "f",
@@ -2048,34 +2216,36 @@
       "return_type_schema": "pg_catalog",
       "language": "plpgsql",
       "security_definer": false,
-      "volatility": "i",
+      "volatility": "s",
       "parallel_safety": "u",
       "execution_cost": 100,
       "result_rows": 0,
       "is_strict": false,
       "leakproof": false,
       "returns_set": false,
-      "argument_count": 4,
+      "argument_count": 5,
       "argument_default_count": 0,
       "argument_names": [
         "op",
         "type_",
         "val_1",
-        "val_2"
+        "val_2",
+        "negate"
       ],
       "argument_types": [
         "realtime.equality_op",
         "regtype",
         "text",
-        "text"
+        "text",
+        "boolean"
       ],
       "all_argument_types": [],
       "argument_modes": null,
       "argument_defaults": null,
-      "source_code": "\n/*\nCasts *val_1* and *val_2* as type *type_* and check the *op* condition for truthiness\n*/\ndeclare\n    op_symbol text = (\n        case\n            when op = 'eq' then '='\n            when op = 'neq' then '!='\n            when op = 'lt' then '<'\n            when op = 'lte' then '<='\n            when op = 'gt' then '>'\n            when op = 'gte' then '>='\n            when op = 'in' then '= any'\n            else 'UNKNOWN OP'\n        end\n    );\n    res boolean;\nbegin\n    execute format(\n        'select %L::'|| type_::text || ' ' || op_symbol\n        || ' ( %L::'\n        || (\n            case\n                when op = 'in' then type_::text || '[]'\n                else type_::text end\n        )\n        || ')', val_1, val_2) into res;\n    return res;\nend;\n",
+      "source_code": "\ndeclare\n    op_symbol text;\n    res boolean;\nbegin\n    -- IS DISTINCT FROM / IS NOT DISTINCT FROM: infix, both sides typed literals\n    if op = 'isdistinct' then\n        execute format(\n            'select %L::%s %s %L::%s',\n            val_1,\n            type_::text,\n            case when negate then 'IS NOT DISTINCT FROM' else 'IS DISTINCT FROM' end,\n            val_2,\n            type_::text\n        ) into res;\n        return res;\n    end if;\n\n    -- IS requires a keyword RHS (NULL, TRUE, FALSE, UNKNOWN), not a typed literal\n    if op = 'is' then\n        if val_2 not in ('null', 'true', 'false', 'unknown') then\n            raise exception 'invalid value for is filter: must be null, true, false, or unknown';\n        end if;\n        execute format(\n            'select %L::%s %s %s',\n            val_1,\n            type_::text,\n            case when negate then 'IS NOT' else 'IS' end,\n            upper(val_2)\n        ) into res;\n        return res;\n    end if;\n\n    op_symbol = case\n        when op = 'eq'    then '='\n        when op = 'neq'   then '!='\n        when op = 'lt'    then '<'\n        when op = 'lte'   then '<='\n        when op = 'gt'    then '>'\n        when op = 'gte'   then '>='\n        when op = 'in'    then '= any'\n        when op = 'like'   then 'LIKE'\n        when op = 'ilike'  then 'ILIKE'\n        when op = 'match'  then '~'\n        when op = 'imatch' then '~*'\n        else null\n    end;\n\n    if op_symbol is null then\n        raise exception 'unsupported equality operator: %', op::text;\n    end if;\n\n    execute format(\n        'select %L::%s %s (%L::%s)',\n        val_1,\n        type_::text,\n        op_symbol,\n        val_2,\n        case when op = 'in' then type_::text || '[]' else type_::text end\n    ) into res;\n\n    return case when negate then not res else res end;\nend;\n",
       "binary_path": null,
       "sql_body": null,
-      "definition": "CREATE OR REPLACE FUNCTION realtime.check_equality_op(op realtime.equality_op, type_ regtype, val_1 text, val_2 text)\n RETURNS boolean\n LANGUAGE plpgsql\n IMMUTABLE\nAS $function$\n/*\nCasts *val_1* and *val_2* as type *type_* and check the *op* condition for truthiness\n*/\ndeclare\n    op_symbol text = (\n        case\n            when op = 'eq' then '='\n            when op = 'neq' then '!='\n            when op = 'lt' then '<'\n            when op = 'lte' then '<='\n            when op = 'gt' then '>'\n            when op = 'gte' then '>='\n            when op = 'in' then '= any'\n            else 'UNKNOWN OP'\n        end\n    );\n    res boolean;\nbegin\n    execute format(\n        'select %L::'|| type_::text || ' ' || op_symbol\n        || ' ( %L::'\n        || (\n            case\n                when op = 'in' then type_::text || '[]'\n                else type_::text end\n        )\n        || ')', val_1, val_2) into res;\n    return res;\nend;\n$function$\n",
+      "definition": "CREATE OR REPLACE FUNCTION realtime.check_equality_op(op realtime.equality_op, type_ regtype, val_1 text, val_2 text, negate boolean)\n RETURNS boolean\n LANGUAGE plpgsql\n STABLE\nAS $function$\ndeclare\n    op_symbol text;\n    res boolean;\nbegin\n    -- IS DISTINCT FROM / IS NOT DISTINCT FROM: infix, both sides typed literals\n    if op = 'isdistinct' then\n        execute format(\n            'select %L::%s %s %L::%s',\n            val_1,\n            type_::text,\n            case when negate then 'IS NOT DISTINCT FROM' else 'IS DISTINCT FROM' end,\n            val_2,\n            type_::text\n        ) into res;\n        return res;\n    end if;\n\n    -- IS requires a keyword RHS (NULL, TRUE, FALSE, UNKNOWN), not a typed literal\n    if op = 'is' then\n        if val_2 not in ('null', 'true', 'false', 'unknown') then\n            raise exception 'invalid value for is filter: must be null, true, false, or unknown';\n        end if;\n        execute format(\n            'select %L::%s %s %s',\n            val_1,\n            type_::text,\n            case when negate then 'IS NOT' else 'IS' end,\n            upper(val_2)\n        ) into res;\n        return res;\n    end if;\n\n    op_symbol = case\n        when op = 'eq'    then '='\n        when op = 'neq'   then '!='\n        when op = 'lt'    then '<'\n        when op = 'lte'   then '<='\n        when op = 'gt'    then '>'\n        when op = 'gte'   then '>='\n        when op = 'in'    then '= any'\n        when op = 'like'   then 'LIKE'\n        when op = 'ilike'  then 'ILIKE'\n        when op = 'match'  then '~'\n        when op = 'imatch' then '~*'\n        else null\n    end;\n\n    if op_symbol is null then\n        raise exception 'unsupported equality operator: %', op::text;\n    end if;\n\n    execute format(\n        'select %L::%s %s (%L::%s)',\n        val_1,\n        type_::text,\n        op_symbol,\n        val_2,\n        case when op = 'in' then type_::text || '[]' else type_::text end\n    ) into res;\n\n    return case when negate then not res else res end;\nend;\n$function$\n",
       "config": null,
       "owner": "supabase_realtime_admin",
       "comment": null,
@@ -6510,46 +6680,6 @@
       "comment": null,
       "owner": "supabase_auth_admin"
     },
-    "index:auth.sso_providers.sso_providers_pkey": {
-      "schema": "auth",
-      "table_name": "sso_providers",
-      "name": "sso_providers_pkey",
-      "storage_params": [],
-      "statistics_target": [
-        -1
-      ],
-      "index_type": "btree",
-      "tablespace": null,
-      "is_unique": true,
-      "is_primary": true,
-      "is_exclusion": false,
-      "nulls_not_distinct": false,
-      "immediate": true,
-      "is_clustered": false,
-      "is_replica_identity": false,
-      "key_columns": [
-        1
-      ],
-      "column_collations": [
-        null
-      ],
-      "operator_classes": [
-        "default"
-      ],
-      "column_options": [
-        0
-      ],
-      "index_expressions": null,
-      "partial_predicate": null,
-      "table_relkind": "r",
-      "is_owned_by_constraint": true,
-      "is_partitioned_index": false,
-      "is_index_partition": false,
-      "parent_index_name": null,
-      "definition": "CREATE UNIQUE INDEX sso_providers_pkey ON auth.sso_providers USING btree (id)",
-      "comment": null,
-      "owner": "supabase_auth_admin"
-    },
     "index:auth.sso_providers.sso_providers_resource_id_idx": {
       "schema": "auth",
       "table_name": "sso_providers",
@@ -6630,10 +6760,50 @@
       "comment": null,
       "owner": "supabase_auth_admin"
     },
-    "index:auth.users.users_email_partial_key": {
+    "index:auth.sso_providers.sso_providers_pkey": {
+      "schema": "auth",
+      "table_name": "sso_providers",
+      "name": "sso_providers_pkey",
+      "storage_params": [],
+      "statistics_target": [
+        -1
+      ],
+      "index_type": "btree",
+      "tablespace": null,
+      "is_unique": true,
+      "is_primary": true,
+      "is_exclusion": false,
+      "nulls_not_distinct": false,
+      "immediate": true,
+      "is_clustered": false,
+      "is_replica_identity": false,
+      "key_columns": [
+        1
+      ],
+      "column_collations": [
+        null
+      ],
+      "operator_classes": [
+        "default"
+      ],
+      "column_options": [
+        0
+      ],
+      "index_expressions": null,
+      "partial_predicate": null,
+      "table_relkind": "r",
+      "is_owned_by_constraint": true,
+      "is_partitioned_index": false,
+      "is_index_partition": false,
+      "parent_index_name": null,
+      "definition": "CREATE UNIQUE INDEX sso_providers_pkey ON auth.sso_providers USING btree (id)",
+      "comment": null,
+      "owner": "supabase_auth_admin"
+    },
+    "index:auth.users.email_change_token_new_idx": {
       "schema": "auth",
       "table_name": "users",
-      "name": "users_email_partial_key",
+      "name": "email_change_token_new_idx",
       "storage_params": [],
       "statistics_target": [
         -1
@@ -6648,7 +6818,7 @@
       "is_clustered": false,
       "is_replica_identity": false,
       "key_columns": [
-        5
+        13
       ],
       "column_collations": [
         null
@@ -6660,14 +6830,14 @@
         0
       ],
       "index_expressions": null,
-      "partial_predicate": "(is_sso_user = false)",
+      "partial_predicate": "((email_change_token_new)::text !~ '^[0-9 ]*$'::text)",
       "table_relkind": "r",
       "is_owned_by_constraint": false,
       "is_partitioned_index": false,
       "is_index_partition": false,
       "parent_index_name": null,
-      "definition": "CREATE UNIQUE INDEX users_email_partial_key ON auth.users USING btree (email) WHERE is_sso_user = false",
-      "comment": "Auth: A partial unique index that applies only when is_sso_user is false",
+      "definition": "CREATE UNIQUE INDEX email_change_token_new_idx ON auth.users USING btree (email_change_token_new) WHERE email_change_token_new::text !~ '^[0-9 ]*$'::text",
+      "comment": null,
       "owner": "supabase_auth_admin"
     },
     "index:auth.users.users_is_anonymous_idx": {
@@ -6787,46 +6957,6 @@
       "is_index_partition": false,
       "parent_index_name": null,
       "definition": "CREATE UNIQUE INDEX reauthentication_token_idx ON auth.users USING btree (reauthentication_token) WHERE reauthentication_token::text !~ '^[0-9 ]*$'::text",
-      "comment": null,
-      "owner": "supabase_auth_admin"
-    },
-    "index:auth.users.email_change_token_new_idx": {
-      "schema": "auth",
-      "table_name": "users",
-      "name": "email_change_token_new_idx",
-      "storage_params": [],
-      "statistics_target": [
-        -1
-      ],
-      "index_type": "btree",
-      "tablespace": null,
-      "is_unique": true,
-      "is_primary": false,
-      "is_exclusion": false,
-      "nulls_not_distinct": false,
-      "immediate": true,
-      "is_clustered": false,
-      "is_replica_identity": false,
-      "key_columns": [
-        13
-      ],
-      "column_collations": [
-        null
-      ],
-      "operator_classes": [
-        "default"
-      ],
-      "column_options": [
-        0
-      ],
-      "index_expressions": null,
-      "partial_predicate": "((email_change_token_new)::text !~ '^[0-9 ]*$'::text)",
-      "table_relkind": "r",
-      "is_owned_by_constraint": false,
-      "is_partitioned_index": false,
-      "is_index_partition": false,
-      "parent_index_name": null,
-      "definition": "CREATE UNIQUE INDEX email_change_token_new_idx ON auth.users USING btree (email_change_token_new) WHERE email_change_token_new::text !~ '^[0-9 ]*$'::text",
       "comment": null,
       "owner": "supabase_auth_admin"
     },
@@ -7033,6 +7163,46 @@
       "parent_index_name": null,
       "definition": "CREATE UNIQUE INDEX users_pkey ON auth.users USING btree (id)",
       "comment": null,
+      "owner": "supabase_auth_admin"
+    },
+    "index:auth.users.users_email_partial_key": {
+      "schema": "auth",
+      "table_name": "users",
+      "name": "users_email_partial_key",
+      "storage_params": [],
+      "statistics_target": [
+        -1
+      ],
+      "index_type": "btree",
+      "tablespace": null,
+      "is_unique": true,
+      "is_primary": false,
+      "is_exclusion": false,
+      "nulls_not_distinct": false,
+      "immediate": true,
+      "is_clustered": false,
+      "is_replica_identity": false,
+      "key_columns": [
+        5
+      ],
+      "column_collations": [
+        null
+      ],
+      "operator_classes": [
+        "default"
+      ],
+      "column_options": [
+        0
+      ],
+      "index_expressions": null,
+      "partial_predicate": "(is_sso_user = false)",
+      "table_relkind": "r",
+      "is_owned_by_constraint": false,
+      "is_partitioned_index": false,
+      "is_index_partition": false,
+      "parent_index_name": null,
+      "definition": "CREATE UNIQUE INDEX users_email_partial_key ON auth.users USING btree (email) WHERE is_sso_user = false",
+      "comment": "Auth: A partial unique index that applies only when is_sso_user is false",
       "owner": "supabase_auth_admin"
     },
     "index:auth.users.users_phone_key": {
@@ -7355,46 +7525,6 @@
       "comment": null,
       "owner": "supabase_auth_admin"
     },
-    "index:auth.webauthn_credentials.webauthn_credentials_pkey": {
-      "schema": "auth",
-      "table_name": "webauthn_credentials",
-      "name": "webauthn_credentials_pkey",
-      "storage_params": [],
-      "statistics_target": [
-        -1
-      ],
-      "index_type": "btree",
-      "tablespace": null,
-      "is_unique": true,
-      "is_primary": true,
-      "is_exclusion": false,
-      "nulls_not_distinct": false,
-      "immediate": true,
-      "is_clustered": false,
-      "is_replica_identity": false,
-      "key_columns": [
-        1
-      ],
-      "column_collations": [
-        null
-      ],
-      "operator_classes": [
-        "default"
-      ],
-      "column_options": [
-        0
-      ],
-      "index_expressions": null,
-      "partial_predicate": null,
-      "table_relkind": "r",
-      "is_owned_by_constraint": true,
-      "is_partitioned_index": false,
-      "is_index_partition": false,
-      "parent_index_name": null,
-      "definition": "CREATE UNIQUE INDEX webauthn_credentials_pkey ON auth.webauthn_credentials USING btree (id)",
-      "comment": null,
-      "owner": "supabase_auth_admin"
-    },
     "index:auth.webauthn_credentials.webauthn_credentials_user_id_idx": {
       "schema": "auth",
       "table_name": "webauthn_credentials",
@@ -7475,6 +7605,46 @@
       "comment": null,
       "owner": "supabase_auth_admin"
     },
+    "index:auth.webauthn_credentials.webauthn_credentials_pkey": {
+      "schema": "auth",
+      "table_name": "webauthn_credentials",
+      "name": "webauthn_credentials_pkey",
+      "storage_params": [],
+      "statistics_target": [
+        -1
+      ],
+      "index_type": "btree",
+      "tablespace": null,
+      "is_unique": true,
+      "is_primary": true,
+      "is_exclusion": false,
+      "nulls_not_distinct": false,
+      "immediate": true,
+      "is_clustered": false,
+      "is_replica_identity": false,
+      "key_columns": [
+        1
+      ],
+      "column_collations": [
+        null
+      ],
+      "operator_classes": [
+        "default"
+      ],
+      "column_options": [
+        0
+      ],
+      "index_expressions": null,
+      "partial_predicate": null,
+      "table_relkind": "r",
+      "is_owned_by_constraint": true,
+      "is_partitioned_index": false,
+      "is_index_partition": false,
+      "parent_index_name": null,
+      "definition": "CREATE UNIQUE INDEX webauthn_credentials_pkey ON auth.webauthn_credentials USING btree (id)",
+      "comment": null,
+      "owner": "supabase_auth_admin"
+    },
     "index:public.documents.documents_pkey": {
       "schema": "public",
       "table_name": "documents",
@@ -7515,50 +7685,45 @@
       "comment": null,
       "owner": "postgres"
     },
-    "index:realtime.messages.messages_inserted_at_topic_index": {
-      "schema": "realtime",
-      "table_name": "messages",
-      "name": "messages_inserted_at_topic_index",
+    "index:public.movies.movies_pkey": {
+      "schema": "public",
+      "table_name": "movies",
+      "name": "movies_pkey",
       "storage_params": [],
       "statistics_target": [
-        -1,
         -1
       ],
       "index_type": "btree",
       "tablespace": null,
-      "is_unique": false,
-      "is_primary": false,
+      "is_unique": true,
+      "is_primary": true,
       "is_exclusion": false,
       "nulls_not_distinct": false,
       "immediate": true,
       "is_clustered": false,
       "is_replica_identity": false,
       "key_columns": [
-        7,
         1
       ],
       "column_collations": [
-        null,
         null
       ],
       "operator_classes": [
-        "default",
         "default"
       ],
       "column_options": [
-        3,
         0
       ],
       "index_expressions": null,
-      "partial_predicate": "((extension = 'broadcast'::text) AND (private IS TRUE))",
-      "table_relkind": "p",
-      "is_owned_by_constraint": false,
-      "is_partitioned_index": true,
+      "partial_predicate": null,
+      "table_relkind": "r",
+      "is_owned_by_constraint": true,
+      "is_partitioned_index": false,
       "is_index_partition": false,
       "parent_index_name": null,
-      "definition": "CREATE INDEX messages_inserted_at_topic_index ON ONLY realtime.messages USING btree (inserted_at DESC, topic) WHERE extension = 'broadcast'::text AND private IS TRUE",
+      "definition": "CREATE UNIQUE INDEX movies_pkey ON public.movies USING btree (id)",
       "comment": null,
-      "owner": "supabase_realtime_admin"
+      "owner": "postgres"
     },
     "index:realtime.messages.messages_pkey": {
       "schema": "realtime",
@@ -7602,6 +7767,51 @@
       "is_index_partition": false,
       "parent_index_name": null,
       "definition": "CREATE UNIQUE INDEX messages_pkey ON ONLY realtime.messages USING btree (id, inserted_at)",
+      "comment": null,
+      "owner": "supabase_realtime_admin"
+    },
+    "index:realtime.messages.messages_inserted_at_topic_index": {
+      "schema": "realtime",
+      "table_name": "messages",
+      "name": "messages_inserted_at_topic_index",
+      "storage_params": [],
+      "statistics_target": [
+        -1,
+        -1
+      ],
+      "index_type": "btree",
+      "tablespace": null,
+      "is_unique": false,
+      "is_primary": false,
+      "is_exclusion": false,
+      "nulls_not_distinct": false,
+      "immediate": true,
+      "is_clustered": false,
+      "is_replica_identity": false,
+      "key_columns": [
+        7,
+        1
+      ],
+      "column_collations": [
+        null,
+        null
+      ],
+      "operator_classes": [
+        "default",
+        "default"
+      ],
+      "column_options": [
+        3,
+        0
+      ],
+      "index_expressions": null,
+      "partial_predicate": "((extension = 'broadcast'::text) AND (private IS TRUE))",
+      "table_relkind": "p",
+      "is_owned_by_constraint": false,
+      "is_partitioned_index": true,
+      "is_index_partition": false,
+      "parent_index_name": null,
+      "definition": "CREATE INDEX messages_inserted_at_topic_index ON ONLY realtime.messages USING btree (inserted_at DESC, topic) WHERE extension = 'broadcast'::text AND private IS TRUE",
       "comment": null,
       "owner": "supabase_realtime_admin"
     },
@@ -7685,46 +7895,6 @@
       "comment": null,
       "owner": "supabase_realtime_admin"
     },
-    "index:realtime.subscription.ix_realtime_subscription_entity": {
-      "schema": "realtime",
-      "table_name": "subscription",
-      "name": "ix_realtime_subscription_entity",
-      "storage_params": [],
-      "statistics_target": [
-        -1
-      ],
-      "index_type": "btree",
-      "tablespace": null,
-      "is_unique": false,
-      "is_primary": false,
-      "is_exclusion": false,
-      "nulls_not_distinct": false,
-      "immediate": true,
-      "is_clustered": false,
-      "is_replica_identity": false,
-      "key_columns": [
-        3
-      ],
-      "column_collations": [
-        null
-      ],
-      "operator_classes": [
-        "default"
-      ],
-      "column_options": [
-        0
-      ],
-      "index_expressions": null,
-      "partial_predicate": null,
-      "table_relkind": "r",
-      "is_owned_by_constraint": false,
-      "is_partitioned_index": false,
-      "is_index_partition": false,
-      "parent_index_name": null,
-      "definition": "CREATE INDEX ix_realtime_subscription_entity ON realtime.subscription USING btree (entity)",
-      "comment": null,
-      "owner": "supabase_realtime_admin"
-    },
     "index:realtime.subscription.subscription_subscription_id_entity_filters_action_filter_selec": {
       "schema": "realtime",
       "table_name": "subscription",
@@ -7785,25 +7955,25 @@
       "comment": null,
       "owner": "supabase_realtime_admin"
     },
-    "index:storage.buckets.buckets_pkey": {
-      "schema": "storage",
-      "table_name": "buckets",
-      "name": "buckets_pkey",
+    "index:realtime.subscription.ix_realtime_subscription_entity": {
+      "schema": "realtime",
+      "table_name": "subscription",
+      "name": "ix_realtime_subscription_entity",
       "storage_params": [],
       "statistics_target": [
         -1
       ],
       "index_type": "btree",
       "tablespace": null,
-      "is_unique": true,
-      "is_primary": true,
+      "is_unique": false,
+      "is_primary": false,
       "is_exclusion": false,
       "nulls_not_distinct": false,
       "immediate": true,
       "is_clustered": false,
       "is_replica_identity": false,
       "key_columns": [
-        1
+        3
       ],
       "column_collations": [
         null
@@ -7817,13 +7987,13 @@
       "index_expressions": null,
       "partial_predicate": null,
       "table_relkind": "r",
-      "is_owned_by_constraint": true,
+      "is_owned_by_constraint": false,
       "is_partitioned_index": false,
       "is_index_partition": false,
       "parent_index_name": null,
-      "definition": "CREATE UNIQUE INDEX buckets_pkey ON storage.buckets USING btree (id)",
+      "definition": "CREATE INDEX ix_realtime_subscription_entity ON realtime.subscription USING btree (entity)",
       "comment": null,
-      "owner": "supabase_storage_admin"
+      "owner": "supabase_realtime_admin"
     },
     "index:storage.buckets.bname": {
       "schema": "storage",
@@ -7865,10 +8035,10 @@
       "comment": null,
       "owner": "supabase_storage_admin"
     },
-    "index:storage.buckets_analytics.buckets_analytics_unique_name_idx": {
+    "index:storage.buckets.buckets_pkey": {
       "schema": "storage",
-      "table_name": "buckets_analytics",
-      "name": "buckets_analytics_unique_name_idx",
+      "table_name": "buckets",
+      "name": "buckets_pkey",
       "storage_params": [],
       "statistics_target": [
         -1
@@ -7876,7 +8046,7 @@
       "index_type": "btree",
       "tablespace": null,
       "is_unique": true,
-      "is_primary": false,
+      "is_primary": true,
       "is_exclusion": false,
       "nulls_not_distinct": false,
       "immediate": true,
@@ -7895,13 +8065,13 @@
         0
       ],
       "index_expressions": null,
-      "partial_predicate": "(deleted_at IS NULL)",
+      "partial_predicate": null,
       "table_relkind": "r",
-      "is_owned_by_constraint": false,
+      "is_owned_by_constraint": true,
       "is_partitioned_index": false,
       "is_index_partition": false,
       "parent_index_name": null,
-      "definition": "CREATE UNIQUE INDEX buckets_analytics_unique_name_idx ON storage.buckets_analytics USING btree (name) WHERE deleted_at IS NULL",
+      "definition": "CREATE UNIQUE INDEX buckets_pkey ON storage.buckets USING btree (id)",
       "comment": null,
       "owner": "supabase_storage_admin"
     },
@@ -7942,6 +8112,46 @@
       "is_index_partition": false,
       "parent_index_name": null,
       "definition": "CREATE UNIQUE INDEX buckets_analytics_pkey ON storage.buckets_analytics USING btree (id)",
+      "comment": null,
+      "owner": "supabase_storage_admin"
+    },
+    "index:storage.buckets_analytics.buckets_analytics_unique_name_idx": {
+      "schema": "storage",
+      "table_name": "buckets_analytics",
+      "name": "buckets_analytics_unique_name_idx",
+      "storage_params": [],
+      "statistics_target": [
+        -1
+      ],
+      "index_type": "btree",
+      "tablespace": null,
+      "is_unique": true,
+      "is_primary": false,
+      "is_exclusion": false,
+      "nulls_not_distinct": false,
+      "immediate": true,
+      "is_clustered": false,
+      "is_replica_identity": false,
+      "key_columns": [
+        1
+      ],
+      "column_collations": [
+        null
+      ],
+      "operator_classes": [
+        "default"
+      ],
+      "column_options": [
+        0
+      ],
+      "index_expressions": null,
+      "partial_predicate": "(deleted_at IS NULL)",
+      "table_relkind": "r",
+      "is_owned_by_constraint": false,
+      "is_partitioned_index": false,
+      "is_index_partition": false,
+      "parent_index_name": null,
+      "definition": "CREATE UNIQUE INDEX buckets_analytics_unique_name_idx ON storage.buckets_analytics USING btree (name) WHERE deleted_at IS NULL",
       "comment": null,
       "owner": "supabase_storage_admin"
     },
@@ -8065,6 +8275,51 @@
       "comment": null,
       "owner": "supabase_storage_admin"
     },
+    "index:storage.objects.idx_objects_bucket_id_name_lower": {
+      "schema": "storage",
+      "table_name": "objects",
+      "name": "idx_objects_bucket_id_name_lower",
+      "storage_params": [],
+      "statistics_target": [
+        -1,
+        -1
+      ],
+      "index_type": "btree",
+      "tablespace": null,
+      "is_unique": false,
+      "is_primary": false,
+      "is_exclusion": false,
+      "nulls_not_distinct": false,
+      "immediate": true,
+      "is_clustered": false,
+      "is_replica_identity": false,
+      "key_columns": [
+        2,
+        0
+      ],
+      "column_collations": [
+        null,
+        "pg_catalog.\"C\""
+      ],
+      "operator_classes": [
+        "default",
+        "pg_catalog.text_ops"
+      ],
+      "column_options": [
+        0,
+        0
+      ],
+      "index_expressions": "lower(name)",
+      "partial_predicate": null,
+      "table_relkind": "r",
+      "is_owned_by_constraint": false,
+      "is_partitioned_index": false,
+      "is_index_partition": false,
+      "parent_index_name": null,
+      "definition": "CREATE INDEX idx_objects_bucket_id_name_lower ON storage.objects USING btree (bucket_id, lower(name) COLLATE \"C\")",
+      "comment": null,
+      "owner": "supabase_storage_admin"
+    },
     "index:storage.objects.bucketid_objname": {
       "schema": "storage",
       "table_name": "objects",
@@ -8147,51 +8402,6 @@
       "is_index_partition": false,
       "parent_index_name": null,
       "definition": "CREATE UNIQUE INDEX objects_pkey ON storage.objects USING btree (id)",
-      "comment": null,
-      "owner": "supabase_storage_admin"
-    },
-    "index:storage.objects.idx_objects_bucket_id_name_lower": {
-      "schema": "storage",
-      "table_name": "objects",
-      "name": "idx_objects_bucket_id_name_lower",
-      "storage_params": [],
-      "statistics_target": [
-        -1,
-        -1
-      ],
-      "index_type": "btree",
-      "tablespace": null,
-      "is_unique": false,
-      "is_primary": false,
-      "is_exclusion": false,
-      "nulls_not_distinct": false,
-      "immediate": true,
-      "is_clustered": false,
-      "is_replica_identity": false,
-      "key_columns": [
-        2,
-        0
-      ],
-      "column_collations": [
-        null,
-        "pg_catalog.\"C\""
-      ],
-      "operator_classes": [
-        "default",
-        "pg_catalog.text_ops"
-      ],
-      "column_options": [
-        0,
-        0
-      ],
-      "index_expressions": "lower(name)",
-      "partial_predicate": null,
-      "table_relkind": "r",
-      "is_owned_by_constraint": false,
-      "is_partitioned_index": false,
-      "is_index_partition": false,
-      "parent_index_name": null,
-      "definition": "CREATE INDEX idx_objects_bucket_id_name_lower ON storage.objects USING btree (bucket_id, lower(name) COLLATE \"C\")",
       "comment": null,
       "owner": "supabase_storage_admin"
     },
@@ -8410,6 +8620,46 @@
       "comment": null,
       "owner": "supabase_storage_admin"
     },
+    "index:storage.vector_indexes.vector_indexes_pkey": {
+      "schema": "storage",
+      "table_name": "vector_indexes",
+      "name": "vector_indexes_pkey",
+      "storage_params": [],
+      "statistics_target": [
+        -1
+      ],
+      "index_type": "btree",
+      "tablespace": null,
+      "is_unique": true,
+      "is_primary": true,
+      "is_exclusion": false,
+      "nulls_not_distinct": false,
+      "immediate": true,
+      "is_clustered": false,
+      "is_replica_identity": false,
+      "key_columns": [
+        1
+      ],
+      "column_collations": [
+        null
+      ],
+      "operator_classes": [
+        "default"
+      ],
+      "column_options": [
+        0
+      ],
+      "index_expressions": null,
+      "partial_predicate": null,
+      "table_relkind": "r",
+      "is_owned_by_constraint": true,
+      "is_partitioned_index": false,
+      "is_index_partition": false,
+      "parent_index_name": null,
+      "definition": "CREATE UNIQUE INDEX vector_indexes_pkey ON storage.vector_indexes USING btree (id)",
+      "comment": null,
+      "owner": "supabase_storage_admin"
+    },
     "index:storage.vector_indexes.vector_indexes_name_bucket_id_idx": {
       "schema": "storage",
       "table_name": "vector_indexes",
@@ -8452,46 +8702,6 @@
       "is_index_partition": false,
       "parent_index_name": null,
       "definition": "CREATE UNIQUE INDEX vector_indexes_name_bucket_id_idx ON storage.vector_indexes USING btree (name, bucket_id)",
-      "comment": null,
-      "owner": "supabase_storage_admin"
-    },
-    "index:storage.vector_indexes.vector_indexes_pkey": {
-      "schema": "storage",
-      "table_name": "vector_indexes",
-      "name": "vector_indexes_pkey",
-      "storage_params": [],
-      "statistics_target": [
-        -1
-      ],
-      "index_type": "btree",
-      "tablespace": null,
-      "is_unique": true,
-      "is_primary": true,
-      "is_exclusion": false,
-      "nulls_not_distinct": false,
-      "immediate": true,
-      "is_clustered": false,
-      "is_replica_identity": false,
-      "key_columns": [
-        1
-      ],
-      "column_collations": [
-        null
-      ],
-      "operator_classes": [
-        "default"
-      ],
-      "column_options": [
-        0
-      ],
-      "index_expressions": null,
-      "partial_predicate": null,
-      "table_relkind": "r",
-      "is_owned_by_constraint": true,
-      "is_partitioned_index": false,
-      "is_index_partition": false,
-      "parent_index_name": null,
-      "definition": "CREATE UNIQUE INDEX vector_indexes_pkey ON storage.vector_indexes USING btree (id)",
       "comment": null,
       "owner": "supabase_storage_admin"
     },
@@ -8549,7 +8759,14 @@
       "publish_delete": true,
       "publish_truncate": true,
       "publish_via_partition_root": false,
-      "tables": [],
+      "tables": [
+        {
+          "schema": "public",
+          "name": "documents",
+          "columns": null,
+          "row_filter": null
+        }
+      ],
       "schemas": [],
       "security_labels": []
     }
@@ -13084,6 +13301,86 @@
       "persistence": "p",
       "owned_by_schema": "public",
       "owned_by_table": "documents",
+      "owned_by_column": "id",
+      "comment": null,
+      "privileges": [
+        {
+          "grantee": "postgres",
+          "privilege": "SELECT",
+          "grantable": false
+        },
+        {
+          "grantee": "postgres",
+          "privilege": "UPDATE",
+          "grantable": false
+        },
+        {
+          "grantee": "postgres",
+          "privilege": "USAGE",
+          "grantable": false
+        },
+        {
+          "grantee": "anon",
+          "privilege": "SELECT",
+          "grantable": false
+        },
+        {
+          "grantee": "anon",
+          "privilege": "UPDATE",
+          "grantable": false
+        },
+        {
+          "grantee": "anon",
+          "privilege": "USAGE",
+          "grantable": false
+        },
+        {
+          "grantee": "authenticated",
+          "privilege": "SELECT",
+          "grantable": false
+        },
+        {
+          "grantee": "authenticated",
+          "privilege": "UPDATE",
+          "grantable": false
+        },
+        {
+          "grantee": "authenticated",
+          "privilege": "USAGE",
+          "grantable": false
+        },
+        {
+          "grantee": "service_role",
+          "privilege": "SELECT",
+          "grantable": false
+        },
+        {
+          "grantee": "service_role",
+          "privilege": "UPDATE",
+          "grantable": false
+        },
+        {
+          "grantee": "service_role",
+          "privilege": "USAGE",
+          "grantable": false
+        }
+      ],
+      "owner": "postgres",
+      "security_labels": []
+    },
+    "sequence:public.movies_id_seq": {
+      "schema": "public",
+      "name": "movies_id_seq",
+      "data_type": "bigint",
+      "start_value": 1,
+      "minimum_value": "1",
+      "maximum_value": "9223372036854775807",
+      "increment": 1,
+      "cycle_option": false,
+      "cache_size": 1,
+      "persistence": "p",
+      "owned_by_schema": "public",
+      "owned_by_table": "movies",
       "owned_by_column": "id",
       "comment": null,
       "privileges": [
@@ -25062,6 +25359,317 @@
       ],
       "security_labels": []
     },
+    "table:public.movies": {
+      "schema": "public",
+      "name": "movies",
+      "persistence": "p",
+      "row_security": false,
+      "force_row_security": false,
+      "has_indexes": true,
+      "has_rules": false,
+      "has_triggers": false,
+      "has_subclasses": false,
+      "is_populated": true,
+      "replica_identity": "d",
+      "replica_identity_index": null,
+      "is_partition": false,
+      "options": null,
+      "partition_bound": null,
+      "partition_by": null,
+      "owner": "postgres",
+      "comment": null,
+      "parent_schema": null,
+      "parent_name": null,
+      "columns": [
+        {
+          "name": "id",
+          "position": 1,
+          "data_type": "bigint",
+          "data_type_str": "bigint",
+          "is_custom_type": false,
+          "custom_type_type": null,
+          "custom_type_category": null,
+          "custom_type_schema": null,
+          "custom_type_name": null,
+          "not_null": true,
+          "is_identity": false,
+          "is_identity_always": false,
+          "is_generated": false,
+          "collation": null,
+          "default": "nextval('public.movies_id_seq'::regclass)",
+          "comment": null,
+          "security_labels": []
+        },
+        {
+          "name": "content",
+          "position": 2,
+          "data_type": "text",
+          "data_type_str": "text",
+          "is_custom_type": false,
+          "custom_type_type": null,
+          "custom_type_category": null,
+          "custom_type_schema": null,
+          "custom_type_name": null,
+          "not_null": false,
+          "is_identity": false,
+          "is_identity_always": false,
+          "is_generated": false,
+          "collation": null,
+          "default": null,
+          "comment": null,
+          "security_labels": []
+        },
+        {
+          "name": "embedding",
+          "position": 3,
+          "data_type": "extensions.vector",
+          "data_type_str": "extensions.vector(1536)",
+          "is_custom_type": true,
+          "custom_type_type": "b",
+          "custom_type_category": "U",
+          "custom_type_schema": "extensions",
+          "custom_type_name": "vector",
+          "not_null": false,
+          "is_identity": false,
+          "is_identity_always": false,
+          "is_generated": false,
+          "collation": null,
+          "default": null,
+          "comment": null,
+          "security_labels": []
+        }
+      ],
+      "constraints": [
+        {
+          "name": "movies_pkey",
+          "constraint_type": "p",
+          "deferrable": false,
+          "initially_deferred": false,
+          "validated": true,
+          "is_local": true,
+          "no_inherit": true,
+          "is_temporal": false,
+          "is_partition_clone": false,
+          "parent_constraint_schema": null,
+          "parent_constraint_name": null,
+          "parent_table_schema": null,
+          "parent_table_name": null,
+          "key_columns": [
+            "id"
+          ],
+          "foreign_key_columns": null,
+          "foreign_key_table": null,
+          "foreign_key_schema": null,
+          "foreign_key_table_is_partition": null,
+          "foreign_key_parent_schema": null,
+          "foreign_key_parent_table": null,
+          "foreign_key_effective_schema": null,
+          "foreign_key_effective_table": null,
+          "on_update": null,
+          "on_delete": null,
+          "match_type": null,
+          "check_expression": null,
+          "owner": "postgres",
+          "definition": "PRIMARY KEY (id)",
+          "comment": null
+        }
+      ],
+      "privileges": [
+        {
+          "grantee": "postgres",
+          "privilege": "DELETE",
+          "grantable": false,
+          "columns": null
+        },
+        {
+          "grantee": "postgres",
+          "privilege": "INSERT",
+          "grantable": false,
+          "columns": null
+        },
+        {
+          "grantee": "postgres",
+          "privilege": "MAINTAIN",
+          "grantable": false,
+          "columns": null
+        },
+        {
+          "grantee": "postgres",
+          "privilege": "REFERENCES",
+          "grantable": false,
+          "columns": null
+        },
+        {
+          "grantee": "postgres",
+          "privilege": "SELECT",
+          "grantable": false,
+          "columns": null
+        },
+        {
+          "grantee": "postgres",
+          "privilege": "TRIGGER",
+          "grantable": false,
+          "columns": null
+        },
+        {
+          "grantee": "postgres",
+          "privilege": "TRUNCATE",
+          "grantable": false,
+          "columns": null
+        },
+        {
+          "grantee": "postgres",
+          "privilege": "UPDATE",
+          "grantable": false,
+          "columns": null
+        },
+        {
+          "grantee": "anon",
+          "privilege": "DELETE",
+          "grantable": false,
+          "columns": null
+        },
+        {
+          "grantee": "anon",
+          "privilege": "INSERT",
+          "grantable": false,
+          "columns": null
+        },
+        {
+          "grantee": "anon",
+          "privilege": "MAINTAIN",
+          "grantable": false,
+          "columns": null
+        },
+        {
+          "grantee": "anon",
+          "privilege": "REFERENCES",
+          "grantable": false,
+          "columns": null
+        },
+        {
+          "grantee": "anon",
+          "privilege": "SELECT",
+          "grantable": false,
+          "columns": null
+        },
+        {
+          "grantee": "anon",
+          "privilege": "TRIGGER",
+          "grantable": false,
+          "columns": null
+        },
+        {
+          "grantee": "anon",
+          "privilege": "TRUNCATE",
+          "grantable": false,
+          "columns": null
+        },
+        {
+          "grantee": "anon",
+          "privilege": "UPDATE",
+          "grantable": false,
+          "columns": null
+        },
+        {
+          "grantee": "authenticated",
+          "privilege": "DELETE",
+          "grantable": false,
+          "columns": null
+        },
+        {
+          "grantee": "authenticated",
+          "privilege": "INSERT",
+          "grantable": false,
+          "columns": null
+        },
+        {
+          "grantee": "authenticated",
+          "privilege": "MAINTAIN",
+          "grantable": false,
+          "columns": null
+        },
+        {
+          "grantee": "authenticated",
+          "privilege": "REFERENCES",
+          "grantable": false,
+          "columns": null
+        },
+        {
+          "grantee": "authenticated",
+          "privilege": "SELECT",
+          "grantable": false,
+          "columns": null
+        },
+        {
+          "grantee": "authenticated",
+          "privilege": "TRIGGER",
+          "grantable": false,
+          "columns": null
+        },
+        {
+          "grantee": "authenticated",
+          "privilege": "TRUNCATE",
+          "grantable": false,
+          "columns": null
+        },
+        {
+          "grantee": "authenticated",
+          "privilege": "UPDATE",
+          "grantable": false,
+          "columns": null
+        },
+        {
+          "grantee": "service_role",
+          "privilege": "DELETE",
+          "grantable": false,
+          "columns": null
+        },
+        {
+          "grantee": "service_role",
+          "privilege": "INSERT",
+          "grantable": false,
+          "columns": null
+        },
+        {
+          "grantee": "service_role",
+          "privilege": "MAINTAIN",
+          "grantable": false,
+          "columns": null
+        },
+        {
+          "grantee": "service_role",
+          "privilege": "REFERENCES",
+          "grantable": false,
+          "columns": null
+        },
+        {
+          "grantee": "service_role",
+          "privilege": "SELECT",
+          "grantable": false,
+          "columns": null
+        },
+        {
+          "grantee": "service_role",
+          "privilege": "TRIGGER",
+          "grantable": false,
+          "columns": null
+        },
+        {
+          "grantee": "service_role",
+          "privilege": "TRUNCATE",
+          "grantable": false,
+          "columns": null
+        },
+        {
+          "grantee": "service_role",
+          "privilege": "UPDATE",
+          "grantable": false,
+          "columns": null
+        }
+      ],
+      "security_labels": []
+    },
     "table:realtime.messages": {
       "schema": "realtime",
       "name": "messages",
@@ -30027,6 +30635,106 @@
       "deptype": "n"
     },
     {
+      "dependent_stable_id": "acl:procedure:public.match_documents(extensions.vector,double precision,integer)::grantee:anon",
+      "referenced_stable_id": "procedure:public.match_documents(extensions.vector,double precision,integer)",
+      "deptype": "n"
+    },
+    {
+      "dependent_stable_id": "acl:procedure:public.match_documents(extensions.vector,double precision,integer)::grantee:anon",
+      "referenced_stable_id": "role:anon",
+      "deptype": "n"
+    },
+    {
+      "dependent_stable_id": "acl:procedure:public.match_documents(extensions.vector,double precision,integer)::grantee:authenticated",
+      "referenced_stable_id": "procedure:public.match_documents(extensions.vector,double precision,integer)",
+      "deptype": "n"
+    },
+    {
+      "dependent_stable_id": "acl:procedure:public.match_documents(extensions.vector,double precision,integer)::grantee:authenticated",
+      "referenced_stable_id": "role:authenticated",
+      "deptype": "n"
+    },
+    {
+      "dependent_stable_id": "acl:procedure:public.match_documents(extensions.vector,double precision,integer)::grantee:postgres",
+      "referenced_stable_id": "procedure:public.match_documents(extensions.vector,double precision,integer)",
+      "deptype": "n"
+    },
+    {
+      "dependent_stable_id": "acl:procedure:public.match_documents(extensions.vector,double precision,integer)::grantee:postgres",
+      "referenced_stable_id": "role:postgres",
+      "deptype": "n"
+    },
+    {
+      "dependent_stable_id": "acl:procedure:public.match_documents(extensions.vector,double precision,integer)::grantee:PUBLIC",
+      "referenced_stable_id": "procedure:public.match_documents(extensions.vector,double precision,integer)",
+      "deptype": "n"
+    },
+    {
+      "dependent_stable_id": "acl:procedure:public.match_documents(extensions.vector,double precision,integer)::grantee:PUBLIC",
+      "referenced_stable_id": "role:PUBLIC",
+      "deptype": "n"
+    },
+    {
+      "dependent_stable_id": "acl:procedure:public.match_documents(extensions.vector,double precision,integer)::grantee:service_role",
+      "referenced_stable_id": "procedure:public.match_documents(extensions.vector,double precision,integer)",
+      "deptype": "n"
+    },
+    {
+      "dependent_stable_id": "acl:procedure:public.match_documents(extensions.vector,double precision,integer)::grantee:service_role",
+      "referenced_stable_id": "role:service_role",
+      "deptype": "n"
+    },
+    {
+      "dependent_stable_id": "acl:procedure:public.match_movies(extensions.vector,double precision,integer)::grantee:anon",
+      "referenced_stable_id": "procedure:public.match_movies(extensions.vector,double precision,integer)",
+      "deptype": "n"
+    },
+    {
+      "dependent_stable_id": "acl:procedure:public.match_movies(extensions.vector,double precision,integer)::grantee:anon",
+      "referenced_stable_id": "role:anon",
+      "deptype": "n"
+    },
+    {
+      "dependent_stable_id": "acl:procedure:public.match_movies(extensions.vector,double precision,integer)::grantee:authenticated",
+      "referenced_stable_id": "procedure:public.match_movies(extensions.vector,double precision,integer)",
+      "deptype": "n"
+    },
+    {
+      "dependent_stable_id": "acl:procedure:public.match_movies(extensions.vector,double precision,integer)::grantee:authenticated",
+      "referenced_stable_id": "role:authenticated",
+      "deptype": "n"
+    },
+    {
+      "dependent_stable_id": "acl:procedure:public.match_movies(extensions.vector,double precision,integer)::grantee:postgres",
+      "referenced_stable_id": "procedure:public.match_movies(extensions.vector,double precision,integer)",
+      "deptype": "n"
+    },
+    {
+      "dependent_stable_id": "acl:procedure:public.match_movies(extensions.vector,double precision,integer)::grantee:postgres",
+      "referenced_stable_id": "role:postgres",
+      "deptype": "n"
+    },
+    {
+      "dependent_stable_id": "acl:procedure:public.match_movies(extensions.vector,double precision,integer)::grantee:PUBLIC",
+      "referenced_stable_id": "procedure:public.match_movies(extensions.vector,double precision,integer)",
+      "deptype": "n"
+    },
+    {
+      "dependent_stable_id": "acl:procedure:public.match_movies(extensions.vector,double precision,integer)::grantee:PUBLIC",
+      "referenced_stable_id": "role:PUBLIC",
+      "deptype": "n"
+    },
+    {
+      "dependent_stable_id": "acl:procedure:public.match_movies(extensions.vector,double precision,integer)::grantee:service_role",
+      "referenced_stable_id": "procedure:public.match_movies(extensions.vector,double precision,integer)",
+      "deptype": "n"
+    },
+    {
+      "dependent_stable_id": "acl:procedure:public.match_movies(extensions.vector,double precision,integer)::grantee:service_role",
+      "referenced_stable_id": "role:service_role",
+      "deptype": "n"
+    },
+    {
       "dependent_stable_id": "acl:procedure:realtime.\"cast\"(text,regtype)::grantee:anon",
       "referenced_stable_id": "procedure:realtime.\"cast\"(text,regtype)",
       "deptype": "n"
@@ -31407,6 +32115,46 @@
       "deptype": "n"
     },
     {
+      "dependent_stable_id": "acl:sequence:public.movies_id_seq::grantee:anon",
+      "referenced_stable_id": "role:anon",
+      "deptype": "n"
+    },
+    {
+      "dependent_stable_id": "acl:sequence:public.movies_id_seq::grantee:anon",
+      "referenced_stable_id": "sequence:public.movies_id_seq",
+      "deptype": "n"
+    },
+    {
+      "dependent_stable_id": "acl:sequence:public.movies_id_seq::grantee:authenticated",
+      "referenced_stable_id": "role:authenticated",
+      "deptype": "n"
+    },
+    {
+      "dependent_stable_id": "acl:sequence:public.movies_id_seq::grantee:authenticated",
+      "referenced_stable_id": "sequence:public.movies_id_seq",
+      "deptype": "n"
+    },
+    {
+      "dependent_stable_id": "acl:sequence:public.movies_id_seq::grantee:postgres",
+      "referenced_stable_id": "role:postgres",
+      "deptype": "n"
+    },
+    {
+      "dependent_stable_id": "acl:sequence:public.movies_id_seq::grantee:postgres",
+      "referenced_stable_id": "sequence:public.movies_id_seq",
+      "deptype": "n"
+    },
+    {
+      "dependent_stable_id": "acl:sequence:public.movies_id_seq::grantee:service_role",
+      "referenced_stable_id": "role:service_role",
+      "deptype": "n"
+    },
+    {
+      "dependent_stable_id": "acl:sequence:public.movies_id_seq::grantee:service_role",
+      "referenced_stable_id": "sequence:public.movies_id_seq",
+      "deptype": "n"
+    },
+    {
       "dependent_stable_id": "acl:sequence:realtime.subscription_id_seq::grantee:anon",
       "referenced_stable_id": "role:anon",
       "deptype": "n"
@@ -32184,6 +32932,46 @@
     {
       "dependent_stable_id": "acl:table:public.documents::grantee:service_role",
       "referenced_stable_id": "table:public.documents",
+      "deptype": "n"
+    },
+    {
+      "dependent_stable_id": "acl:table:public.movies::grantee:anon",
+      "referenced_stable_id": "role:anon",
+      "deptype": "n"
+    },
+    {
+      "dependent_stable_id": "acl:table:public.movies::grantee:anon",
+      "referenced_stable_id": "table:public.movies",
+      "deptype": "n"
+    },
+    {
+      "dependent_stable_id": "acl:table:public.movies::grantee:authenticated",
+      "referenced_stable_id": "role:authenticated",
+      "deptype": "n"
+    },
+    {
+      "dependent_stable_id": "acl:table:public.movies::grantee:authenticated",
+      "referenced_stable_id": "table:public.movies",
+      "deptype": "n"
+    },
+    {
+      "dependent_stable_id": "acl:table:public.movies::grantee:postgres",
+      "referenced_stable_id": "role:postgres",
+      "deptype": "n"
+    },
+    {
+      "dependent_stable_id": "acl:table:public.movies::grantee:postgres",
+      "referenced_stable_id": "table:public.movies",
+      "deptype": "n"
+    },
+    {
+      "dependent_stable_id": "acl:table:public.movies::grantee:service_role",
+      "referenced_stable_id": "role:service_role",
+      "deptype": "n"
+    },
+    {
+      "dependent_stable_id": "acl:table:public.movies::grantee:service_role",
+      "referenced_stable_id": "table:public.movies",
       "deptype": "n"
     },
     {
@@ -32817,6 +33605,16 @@
       "deptype": "n"
     },
     {
+      "dependent_stable_id": "column:public.movies.embedding",
+      "referenced_stable_id": "type:extensions.vector",
+      "deptype": "n"
+    },
+    {
+      "dependent_stable_id": "column:public.movies.id",
+      "referenced_stable_id": "sequence:public.movies_id_seq",
+      "deptype": "n"
+    },
+    {
       "dependent_stable_id": "column:realtime.subscription.claims_role",
       "referenced_stable_id": "column:realtime.subscription.claims",
       "deptype": "n"
@@ -33084,16 +33882,11 @@
     {
       "dependent_stable_id": "constraint:auth.custom_oauth_providers.custom_oauth_providers_authorization_url_https",
       "referenced_stable_id": "column:auth.custom_oauth_providers.authorization_url",
-      "deptype": "a"
+      "deptype": "n"
     },
     {
       "dependent_stable_id": "constraint:auth.custom_oauth_providers.custom_oauth_providers_authorization_url_https",
       "referenced_stable_id": "column:auth.custom_oauth_providers.authorization_url",
-      "deptype": "n"
-    },
-    {
-      "dependent_stable_id": "constraint:auth.custom_oauth_providers.custom_oauth_providers_authorization_url_length",
-      "referenced_stable_id": "column:auth.custom_oauth_providers.authorization_url",
       "deptype": "a"
     },
     {
@@ -33102,14 +33895,24 @@
       "deptype": "n"
     },
     {
-      "dependent_stable_id": "constraint:auth.custom_oauth_providers.custom_oauth_providers_client_id_length",
-      "referenced_stable_id": "column:auth.custom_oauth_providers.client_id",
-      "deptype": "n"
+      "dependent_stable_id": "constraint:auth.custom_oauth_providers.custom_oauth_providers_authorization_url_length",
+      "referenced_stable_id": "column:auth.custom_oauth_providers.authorization_url",
+      "deptype": "a"
     },
     {
       "dependent_stable_id": "constraint:auth.custom_oauth_providers.custom_oauth_providers_client_id_length",
       "referenced_stable_id": "column:auth.custom_oauth_providers.client_id",
       "deptype": "a"
+    },
+    {
+      "dependent_stable_id": "constraint:auth.custom_oauth_providers.custom_oauth_providers_client_id_length",
+      "referenced_stable_id": "column:auth.custom_oauth_providers.client_id",
+      "deptype": "n"
+    },
+    {
+      "dependent_stable_id": "constraint:auth.custom_oauth_providers.custom_oauth_providers_discovery_url_length",
+      "referenced_stable_id": "column:auth.custom_oauth_providers.discovery_url",
+      "deptype": "n"
     },
     {
       "dependent_stable_id": "constraint:auth.custom_oauth_providers.custom_oauth_providers_discovery_url_length",
@@ -33117,19 +33920,14 @@
       "deptype": "a"
     },
     {
-      "dependent_stable_id": "constraint:auth.custom_oauth_providers.custom_oauth_providers_discovery_url_length",
-      "referenced_stable_id": "column:auth.custom_oauth_providers.discovery_url",
+      "dependent_stable_id": "constraint:auth.custom_oauth_providers.custom_oauth_providers_identifier_format",
+      "referenced_stable_id": "column:auth.custom_oauth_providers.identifier",
       "deptype": "n"
     },
     {
       "dependent_stable_id": "constraint:auth.custom_oauth_providers.custom_oauth_providers_identifier_format",
       "referenced_stable_id": "column:auth.custom_oauth_providers.identifier",
       "deptype": "a"
-    },
-    {
-      "dependent_stable_id": "constraint:auth.custom_oauth_providers.custom_oauth_providers_identifier_format",
-      "referenced_stable_id": "column:auth.custom_oauth_providers.identifier",
-      "deptype": "n"
     },
     {
       "dependent_stable_id": "constraint:auth.custom_oauth_providers.custom_oauth_providers_identifier_key",
@@ -33139,16 +33937,11 @@
     {
       "dependent_stable_id": "constraint:auth.custom_oauth_providers.custom_oauth_providers_issuer_length",
       "referenced_stable_id": "column:auth.custom_oauth_providers.issuer",
-      "deptype": "a"
+      "deptype": "n"
     },
     {
       "dependent_stable_id": "constraint:auth.custom_oauth_providers.custom_oauth_providers_issuer_length",
       "referenced_stable_id": "column:auth.custom_oauth_providers.issuer",
-      "deptype": "n"
-    },
-    {
-      "dependent_stable_id": "constraint:auth.custom_oauth_providers.custom_oauth_providers_jwks_uri_https",
-      "referenced_stable_id": "column:auth.custom_oauth_providers.jwks_uri",
       "deptype": "a"
     },
     {
@@ -33157,7 +33950,7 @@
       "deptype": "n"
     },
     {
-      "dependent_stable_id": "constraint:auth.custom_oauth_providers.custom_oauth_providers_jwks_uri_length",
+      "dependent_stable_id": "constraint:auth.custom_oauth_providers.custom_oauth_providers_jwks_uri_https",
       "referenced_stable_id": "column:auth.custom_oauth_providers.jwks_uri",
       "deptype": "a"
     },
@@ -33167,13 +33960,23 @@
       "deptype": "n"
     },
     {
+      "dependent_stable_id": "constraint:auth.custom_oauth_providers.custom_oauth_providers_jwks_uri_length",
+      "referenced_stable_id": "column:auth.custom_oauth_providers.jwks_uri",
+      "deptype": "a"
+    },
+    {
+      "dependent_stable_id": "constraint:auth.custom_oauth_providers.custom_oauth_providers_name_length",
+      "referenced_stable_id": "column:auth.custom_oauth_providers.name",
+      "deptype": "a"
+    },
+    {
       "dependent_stable_id": "constraint:auth.custom_oauth_providers.custom_oauth_providers_name_length",
       "referenced_stable_id": "column:auth.custom_oauth_providers.name",
       "deptype": "n"
     },
     {
-      "dependent_stable_id": "constraint:auth.custom_oauth_providers.custom_oauth_providers_name_length",
-      "referenced_stable_id": "column:auth.custom_oauth_providers.name",
+      "dependent_stable_id": "constraint:auth.custom_oauth_providers.custom_oauth_providers_oauth2_requires_endpoints",
+      "referenced_stable_id": "column:auth.custom_oauth_providers.authorization_url",
       "deptype": "a"
     },
     {
@@ -33183,7 +33986,7 @@
     },
     {
       "dependent_stable_id": "constraint:auth.custom_oauth_providers.custom_oauth_providers_oauth2_requires_endpoints",
-      "referenced_stable_id": "column:auth.custom_oauth_providers.authorization_url",
+      "referenced_stable_id": "column:auth.custom_oauth_providers.provider_type",
       "deptype": "a"
     },
     {
@@ -33193,18 +33996,13 @@
     },
     {
       "dependent_stable_id": "constraint:auth.custom_oauth_providers.custom_oauth_providers_oauth2_requires_endpoints",
-      "referenced_stable_id": "column:auth.custom_oauth_providers.provider_type",
-      "deptype": "a"
-    },
-    {
-      "dependent_stable_id": "constraint:auth.custom_oauth_providers.custom_oauth_providers_oauth2_requires_endpoints",
-      "referenced_stable_id": "column:auth.custom_oauth_providers.token_url",
-      "deptype": "a"
-    },
-    {
-      "dependent_stable_id": "constraint:auth.custom_oauth_providers.custom_oauth_providers_oauth2_requires_endpoints",
       "referenced_stable_id": "column:auth.custom_oauth_providers.token_url",
       "deptype": "n"
+    },
+    {
+      "dependent_stable_id": "constraint:auth.custom_oauth_providers.custom_oauth_providers_oauth2_requires_endpoints",
+      "referenced_stable_id": "column:auth.custom_oauth_providers.token_url",
+      "deptype": "a"
     },
     {
       "dependent_stable_id": "constraint:auth.custom_oauth_providers.custom_oauth_providers_oauth2_requires_endpoints",
@@ -33219,12 +34017,12 @@
     {
       "dependent_stable_id": "constraint:auth.custom_oauth_providers.custom_oauth_providers_oidc_discovery_url_https",
       "referenced_stable_id": "column:auth.custom_oauth_providers.discovery_url",
-      "deptype": "a"
+      "deptype": "n"
     },
     {
       "dependent_stable_id": "constraint:auth.custom_oauth_providers.custom_oauth_providers_oidc_discovery_url_https",
       "referenced_stable_id": "column:auth.custom_oauth_providers.discovery_url",
-      "deptype": "n"
+      "deptype": "a"
     },
     {
       "dependent_stable_id": "constraint:auth.custom_oauth_providers.custom_oauth_providers_oidc_discovery_url_https",
@@ -33259,22 +34057,22 @@
     {
       "dependent_stable_id": "constraint:auth.custom_oauth_providers.custom_oauth_providers_oidc_requires_issuer",
       "referenced_stable_id": "column:auth.custom_oauth_providers.issuer",
-      "deptype": "n"
+      "deptype": "a"
     },
     {
       "dependent_stable_id": "constraint:auth.custom_oauth_providers.custom_oauth_providers_oidc_requires_issuer",
       "referenced_stable_id": "column:auth.custom_oauth_providers.issuer",
-      "deptype": "a"
-    },
-    {
-      "dependent_stable_id": "constraint:auth.custom_oauth_providers.custom_oauth_providers_oidc_requires_issuer",
-      "referenced_stable_id": "column:auth.custom_oauth_providers.provider_type",
       "deptype": "n"
     },
     {
       "dependent_stable_id": "constraint:auth.custom_oauth_providers.custom_oauth_providers_oidc_requires_issuer",
       "referenced_stable_id": "column:auth.custom_oauth_providers.provider_type",
       "deptype": "a"
+    },
+    {
+      "dependent_stable_id": "constraint:auth.custom_oauth_providers.custom_oauth_providers_oidc_requires_issuer",
+      "referenced_stable_id": "column:auth.custom_oauth_providers.provider_type",
+      "deptype": "n"
     },
     {
       "dependent_stable_id": "constraint:auth.custom_oauth_providers.custom_oauth_providers_pkey",
@@ -33284,17 +34082,12 @@
     {
       "dependent_stable_id": "constraint:auth.custom_oauth_providers.custom_oauth_providers_provider_type_check",
       "referenced_stable_id": "column:auth.custom_oauth_providers.provider_type",
-      "deptype": "n"
+      "deptype": "a"
     },
     {
       "dependent_stable_id": "constraint:auth.custom_oauth_providers.custom_oauth_providers_provider_type_check",
       "referenced_stable_id": "column:auth.custom_oauth_providers.provider_type",
-      "deptype": "a"
-    },
-    {
-      "dependent_stable_id": "constraint:auth.custom_oauth_providers.custom_oauth_providers_token_url_https",
-      "referenced_stable_id": "column:auth.custom_oauth_providers.token_url",
-      "deptype": "a"
+      "deptype": "n"
     },
     {
       "dependent_stable_id": "constraint:auth.custom_oauth_providers.custom_oauth_providers_token_url_https",
@@ -33302,14 +34095,19 @@
       "deptype": "n"
     },
     {
-      "dependent_stable_id": "constraint:auth.custom_oauth_providers.custom_oauth_providers_token_url_length",
+      "dependent_stable_id": "constraint:auth.custom_oauth_providers.custom_oauth_providers_token_url_https",
       "referenced_stable_id": "column:auth.custom_oauth_providers.token_url",
-      "deptype": "n"
+      "deptype": "a"
     },
     {
       "dependent_stable_id": "constraint:auth.custom_oauth_providers.custom_oauth_providers_token_url_length",
       "referenced_stable_id": "column:auth.custom_oauth_providers.token_url",
       "deptype": "a"
+    },
+    {
+      "dependent_stable_id": "constraint:auth.custom_oauth_providers.custom_oauth_providers_token_url_length",
+      "referenced_stable_id": "column:auth.custom_oauth_providers.token_url",
+      "deptype": "n"
     },
     {
       "dependent_stable_id": "constraint:auth.custom_oauth_providers.custom_oauth_providers_userinfo_url_https",
@@ -33474,12 +34272,12 @@
     {
       "dependent_stable_id": "constraint:auth.oauth_authorizations.oauth_authorizations_authorization_code_length",
       "referenced_stable_id": "column:auth.oauth_authorizations.authorization_code",
-      "deptype": "a"
+      "deptype": "n"
     },
     {
       "dependent_stable_id": "constraint:auth.oauth_authorizations.oauth_authorizations_authorization_code_length",
       "referenced_stable_id": "column:auth.oauth_authorizations.authorization_code",
-      "deptype": "n"
+      "deptype": "a"
     },
     {
       "dependent_stable_id": "constraint:auth.oauth_authorizations.oauth_authorizations_authorization_id_key",
@@ -33509,12 +34307,12 @@
     {
       "dependent_stable_id": "constraint:auth.oauth_authorizations.oauth_authorizations_code_challenge_length",
       "referenced_stable_id": "column:auth.oauth_authorizations.code_challenge",
-      "deptype": "a"
+      "deptype": "n"
     },
     {
       "dependent_stable_id": "constraint:auth.oauth_authorizations.oauth_authorizations_code_challenge_length",
       "referenced_stable_id": "column:auth.oauth_authorizations.code_challenge",
-      "deptype": "n"
+      "deptype": "a"
     },
     {
       "dependent_stable_id": "constraint:auth.oauth_authorizations.oauth_authorizations_expires_at_future",
@@ -33529,12 +34327,12 @@
     {
       "dependent_stable_id": "constraint:auth.oauth_authorizations.oauth_authorizations_expires_at_future",
       "referenced_stable_id": "column:auth.oauth_authorizations.expires_at",
-      "deptype": "n"
+      "deptype": "a"
     },
     {
       "dependent_stable_id": "constraint:auth.oauth_authorizations.oauth_authorizations_expires_at_future",
       "referenced_stable_id": "column:auth.oauth_authorizations.expires_at",
-      "deptype": "a"
+      "deptype": "n"
     },
     {
       "dependent_stable_id": "constraint:auth.oauth_authorizations.oauth_authorizations_nonce_length",
@@ -33584,12 +34382,12 @@
     {
       "dependent_stable_id": "constraint:auth.oauth_authorizations.oauth_authorizations_state_length",
       "referenced_stable_id": "column:auth.oauth_authorizations.state",
-      "deptype": "a"
+      "deptype": "n"
     },
     {
       "dependent_stable_id": "constraint:auth.oauth_authorizations.oauth_authorizations_state_length",
       "referenced_stable_id": "column:auth.oauth_authorizations.state",
-      "deptype": "n"
+      "deptype": "a"
     },
     {
       "dependent_stable_id": "constraint:auth.oauth_authorizations.oauth_authorizations_user_id_fkey",
@@ -33629,22 +34427,22 @@
     {
       "dependent_stable_id": "constraint:auth.oauth_clients.oauth_clients_client_uri_length",
       "referenced_stable_id": "column:auth.oauth_clients.client_uri",
-      "deptype": "a"
+      "deptype": "n"
     },
     {
       "dependent_stable_id": "constraint:auth.oauth_clients.oauth_clients_client_uri_length",
       "referenced_stable_id": "column:auth.oauth_clients.client_uri",
-      "deptype": "n"
-    },
-    {
-      "dependent_stable_id": "constraint:auth.oauth_clients.oauth_clients_logo_uri_length",
-      "referenced_stable_id": "column:auth.oauth_clients.logo_uri",
       "deptype": "a"
     },
     {
       "dependent_stable_id": "constraint:auth.oauth_clients.oauth_clients_logo_uri_length",
       "referenced_stable_id": "column:auth.oauth_clients.logo_uri",
       "deptype": "n"
+    },
+    {
+      "dependent_stable_id": "constraint:auth.oauth_clients.oauth_clients_logo_uri_length",
+      "referenced_stable_id": "column:auth.oauth_clients.logo_uri",
+      "deptype": "a"
     },
     {
       "dependent_stable_id": "constraint:auth.oauth_clients.oauth_clients_pkey",
@@ -33654,12 +34452,12 @@
     {
       "dependent_stable_id": "constraint:auth.oauth_clients.oauth_clients_token_endpoint_auth_method_check",
       "referenced_stable_id": "column:auth.oauth_clients.token_endpoint_auth_method",
-      "deptype": "a"
+      "deptype": "n"
     },
     {
       "dependent_stable_id": "constraint:auth.oauth_clients.oauth_clients_token_endpoint_auth_method_check",
       "referenced_stable_id": "column:auth.oauth_clients.token_endpoint_auth_method",
-      "deptype": "n"
+      "deptype": "a"
     },
     {
       "dependent_stable_id": "constraint:auth.oauth_consents.oauth_consents_client_id_fkey",
@@ -33824,16 +34622,11 @@
     {
       "dependent_stable_id": "constraint:auth.saml_providers.\"entity_id not empty\"",
       "referenced_stable_id": "column:auth.saml_providers.entity_id",
-      "deptype": "a"
+      "deptype": "n"
     },
     {
       "dependent_stable_id": "constraint:auth.saml_providers.\"entity_id not empty\"",
       "referenced_stable_id": "column:auth.saml_providers.entity_id",
-      "deptype": "n"
-    },
-    {
-      "dependent_stable_id": "constraint:auth.saml_providers.\"metadata_url not empty\"",
-      "referenced_stable_id": "column:auth.saml_providers.metadata_url",
       "deptype": "a"
     },
     {
@@ -33842,14 +34635,19 @@
       "deptype": "n"
     },
     {
-      "dependent_stable_id": "constraint:auth.saml_providers.\"metadata_xml not empty\"",
-      "referenced_stable_id": "column:auth.saml_providers.metadata_xml",
-      "deptype": "n"
+      "dependent_stable_id": "constraint:auth.saml_providers.\"metadata_url not empty\"",
+      "referenced_stable_id": "column:auth.saml_providers.metadata_url",
+      "deptype": "a"
     },
     {
       "dependent_stable_id": "constraint:auth.saml_providers.\"metadata_xml not empty\"",
       "referenced_stable_id": "column:auth.saml_providers.metadata_xml",
       "deptype": "a"
+    },
+    {
+      "dependent_stable_id": "constraint:auth.saml_providers.\"metadata_xml not empty\"",
+      "referenced_stable_id": "column:auth.saml_providers.metadata_xml",
+      "deptype": "n"
     },
     {
       "dependent_stable_id": "constraint:auth.saml_providers.saml_providers_entity_id_key",
@@ -33969,12 +34767,12 @@
     {
       "dependent_stable_id": "constraint:auth.sessions.sessions_scopes_length",
       "referenced_stable_id": "column:auth.sessions.scopes",
-      "deptype": "n"
+      "deptype": "a"
     },
     {
       "dependent_stable_id": "constraint:auth.sessions.sessions_scopes_length",
       "referenced_stable_id": "column:auth.sessions.scopes",
-      "deptype": "a"
+      "deptype": "n"
     },
     {
       "dependent_stable_id": "constraint:auth.sessions.sessions_user_id_fkey",
@@ -33999,12 +34797,12 @@
     {
       "dependent_stable_id": "constraint:auth.sso_domains.\"domain not empty\"",
       "referenced_stable_id": "column:auth.sso_domains.domain",
-      "deptype": "n"
+      "deptype": "a"
     },
     {
       "dependent_stable_id": "constraint:auth.sso_domains.\"domain not empty\"",
       "referenced_stable_id": "column:auth.sso_domains.domain",
-      "deptype": "a"
+      "deptype": "n"
     },
     {
       "dependent_stable_id": "constraint:auth.sso_domains.sso_domains_pkey",
@@ -34049,12 +34847,12 @@
     {
       "dependent_stable_id": "constraint:auth.users.users_email_change_confirm_status_check",
       "referenced_stable_id": "column:auth.users.email_change_confirm_status",
-      "deptype": "n"
+      "deptype": "a"
     },
     {
       "dependent_stable_id": "constraint:auth.users.users_email_change_confirm_status_check",
       "referenced_stable_id": "column:auth.users.email_change_confirm_status",
-      "deptype": "a"
+      "deptype": "n"
     },
     {
       "dependent_stable_id": "constraint:auth.users.users_phone_key",
@@ -34132,9 +34930,9 @@
       "deptype": "a"
     },
     {
-      "dependent_stable_id": "constraint:realtime.messages.messages_payload_exclusive",
-      "referenced_stable_id": "column:realtime.messages.binary_payload",
-      "deptype": "n"
+      "dependent_stable_id": "constraint:public.movies.movies_pkey",
+      "referenced_stable_id": "column:public.movies.id",
+      "deptype": "a"
     },
     {
       "dependent_stable_id": "constraint:realtime.messages.messages_payload_exclusive",
@@ -34143,13 +34941,18 @@
     },
     {
       "dependent_stable_id": "constraint:realtime.messages.messages_payload_exclusive",
-      "referenced_stable_id": "column:realtime.messages.payload",
-      "deptype": "a"
+      "referenced_stable_id": "column:realtime.messages.binary_payload",
+      "deptype": "n"
     },
     {
       "dependent_stable_id": "constraint:realtime.messages.messages_payload_exclusive",
       "referenced_stable_id": "column:realtime.messages.payload",
       "deptype": "n"
+    },
+    {
+      "dependent_stable_id": "constraint:realtime.messages.messages_payload_exclusive",
+      "referenced_stable_id": "column:realtime.messages.payload",
+      "deptype": "a"
     },
     {
       "dependent_stable_id": "constraint:realtime.messages.messages_pkey",
@@ -36554,12 +37357,12 @@
     {
       "dependent_stable_id": "index:auth.sso_domains.sso_domains_domain_idx",
       "referenced_stable_id": "table:auth.sso_domains",
-      "deptype": "a"
+      "deptype": "n"
     },
     {
       "dependent_stable_id": "index:auth.sso_domains.sso_domains_domain_idx",
       "referenced_stable_id": "table:auth.sso_domains",
-      "deptype": "n"
+      "deptype": "a"
     },
     {
       "dependent_stable_id": "index:auth.sso_domains.sso_domains_pkey",
@@ -36734,12 +37537,12 @@
     {
       "dependent_stable_id": "index:auth.users.idx_users_name",
       "referenced_stable_id": "table:auth.users",
-      "deptype": "n"
+      "deptype": "a"
     },
     {
       "dependent_stable_id": "index:auth.users.idx_users_name",
       "referenced_stable_id": "table:auth.users",
-      "deptype": "a"
+      "deptype": "n"
     },
     {
       "dependent_stable_id": "index:auth.users.reauthentication_token_idx",
@@ -36949,6 +37752,16 @@
     {
       "dependent_stable_id": "index:public.documents.documents_pkey",
       "referenced_stable_id": "table:public.documents",
+      "deptype": "n"
+    },
+    {
+      "dependent_stable_id": "index:public.movies.movies_pkey",
+      "referenced_stable_id": "schema:public",
+      "deptype": "n"
+    },
+    {
+      "dependent_stable_id": "index:public.movies.movies_pkey",
+      "referenced_stable_id": "table:public.movies",
       "deptype": "n"
     },
     {
@@ -39892,6 +40705,36 @@
       "deptype": "n"
     },
     {
+      "dependent_stable_id": "procedure:public.match_documents(extensions.vector,double precision,integer)",
+      "referenced_stable_id": "role:postgres",
+      "deptype": "n"
+    },
+    {
+      "dependent_stable_id": "procedure:public.match_documents(extensions.vector,double precision,integer)",
+      "referenced_stable_id": "schema:public",
+      "deptype": "n"
+    },
+    {
+      "dependent_stable_id": "procedure:public.match_documents(extensions.vector,double precision,integer)",
+      "referenced_stable_id": "type:extensions.vector",
+      "deptype": "n"
+    },
+    {
+      "dependent_stable_id": "procedure:public.match_movies(extensions.vector,double precision,integer)",
+      "referenced_stable_id": "role:postgres",
+      "deptype": "n"
+    },
+    {
+      "dependent_stable_id": "procedure:public.match_movies(extensions.vector,double precision,integer)",
+      "referenced_stable_id": "schema:public",
+      "deptype": "n"
+    },
+    {
+      "dependent_stable_id": "procedure:public.match_movies(extensions.vector,double precision,integer)",
+      "referenced_stable_id": "type:extensions.vector",
+      "deptype": "n"
+    },
+    {
       "dependent_stable_id": "procedure:realtime.\"cast\"(text,regtype)",
       "referenced_stable_id": "language:plpgsql",
       "deptype": "n"
@@ -40417,6 +41260,16 @@
       "deptype": "n"
     },
     {
+      "dependent_stable_id": "publication:supabase_realtime",
+      "referenced_stable_id": "table:public.documents",
+      "deptype": "n"
+    },
+    {
+      "dependent_stable_id": "publication:supabase_realtime",
+      "referenced_stable_id": "table:public.documents",
+      "deptype": "a"
+    },
+    {
       "dependent_stable_id": "rule:extensions.pg_stat_statements_info.\"_RETURN\"",
       "referenced_stable_id": "procedure:extensions.pg_stat_statements_info()",
       "deptype": "n"
@@ -40548,6 +41401,21 @@
     },
     {
       "dependent_stable_id": "sequence:public.documents_id_seq",
+      "referenced_stable_id": "schema:public",
+      "deptype": "n"
+    },
+    {
+      "dependent_stable_id": "sequence:public.movies_id_seq",
+      "referenced_stable_id": "column:public.movies.id",
+      "deptype": "a"
+    },
+    {
+      "dependent_stable_id": "sequence:public.movies_id_seq",
+      "referenced_stable_id": "role:postgres",
+      "deptype": "n"
+    },
+    {
+      "dependent_stable_id": "sequence:public.movies_id_seq",
       "referenced_stable_id": "schema:public",
       "deptype": "n"
     },
@@ -40798,6 +41666,16 @@
     },
     {
       "dependent_stable_id": "table:public.documents",
+      "referenced_stable_id": "schema:public",
+      "deptype": "n"
+    },
+    {
+      "dependent_stable_id": "table:public.movies",
+      "referenced_stable_id": "role:postgres",
+      "deptype": "n"
+    },
+    {
+      "dependent_stable_id": "table:public.movies",
       "referenced_stable_id": "schema:public",
       "deptype": "n"
     },
@@ -41408,6 +42286,11 @@
     },
     {
       "dependent_stable_id": "type:public._documents",
+      "referenced_stable_id": "role:postgres",
+      "deptype": "n"
+    },
+    {
+      "dependent_stable_id": "type:public._movies",
       "referenced_stable_id": "role:postgres",
       "deptype": "n"
     },

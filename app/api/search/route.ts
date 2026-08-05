@@ -25,14 +25,14 @@ export async function POST(request: NextRequest) {
         const { data, error } = await supabaseAdmin.rpc('match_documents', {
             query_embedding: embedding,
             match_threshold: 0.35,
-            match_count: 3,
+            match_count: 10,
         });
 
         if (error) {
             throw new Error(error.message);
         }
 
-        const context = data?.map((item: any) => item.content).join('\n\n');
+        const context = data?.map((item) => item.content).join('\n\n');
 
         // Generate answer
         const response = await openai.responses.create({
@@ -41,12 +41,29 @@ export async function POST(request: NextRequest) {
                 {
                     role: 'developer',
                     content: `
-                    Answer using the context.
+                       You are a helpful AI assistant.
 
-                    Context:
+                        Answer ONLY using the provided context.
 
-                    ${context}
-                `,
+                        If the answer is not available, say:
+                        "I couldn't find that information in the provided documents."
+
+                        Format your response using Markdown.
+
+                        Rules:
+                        - Always leave one blank line between paragraphs.
+                        - Always leave one blank line before and after headings.
+                        - Put each bullet point on its own line.
+                        - Use tables when comparing data.
+                        - Use headings (##) for sections.
+                        - Use **bold** for important values.
+                        - Never place headings or bullet points on the same line as other text.
+                    
+
+                        ## Context
+
+                        ${context}
+                        `,
                 },
 
                 ...messages,
