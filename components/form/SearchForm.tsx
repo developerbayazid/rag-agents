@@ -2,15 +2,9 @@
 import { useState } from 'react';
 import ReactMarkdown from 'react-markdown';
 
-interface Result {
-    id: number;
-    content: string;
-    similarity: number;
-}
-
 export default function SearchForm() {
     const [question, setQuestion] = useState('');
-    const [results, setResults] = useState('');
+    // const [results, setResults] = useState('');
     const [loading, setLoading] = useState(false);
     const [messages, setMessages] = useState<
         {
@@ -34,7 +28,7 @@ export default function SearchForm() {
         setMessages(updatedMessages);
 
         setLoading(true);
-        setResults('');
+        // setResults('');
         setQuestion('');
 
         try {
@@ -52,7 +46,7 @@ export default function SearchForm() {
             const data = await response.json();
 
             if (response.ok) {
-                setResults(data.answer);
+                // setResults(data.answer);
                 setMessages([
                     ...updatedMessages,
                     {
@@ -72,42 +66,101 @@ export default function SearchForm() {
     }
 
     return (
-        <div className="container mx-auto mt-20">
-            <form onSubmit={handleSearch} className="space-y-4">
-                <textarea
-                    value={question}
-                    onChange={(e) => setQuestion(e.target.value)}
-                    placeholder="Ask something..."
-                    rows={5}
-                    className="w-full border rounded p-4"
-                />
+        <div className="flex flex-col h-screen bg-white">
+            {/* Header */}
+            {/* <div className="border-b border-gray-200 px-6 py-4 text-center">
+                <h1 className="text-xl font-semibold text-gray-900">
+                    AI Assistant
+                </h1>
+                <p className="text-sm text-gray-500">
+                    Ask questions about your knowledge base
+                </p>
+            </div> */}
 
-                <button
-                    disabled={loading}
-                    className="bg-black text-white px-6 py-2 rounded disabled:opacity-50 hover:cursor-pointer"
-                >
-                    {loading ? 'Searching...' : 'Search'}
-                </button>
-            </form>
+            {/* Chat Area */}
+            <div className="flex-1 overflow-y-auto px-6 py-8">
+                <div className="max-w-4xl mx-auto space-y-8">
+                    {messages.length === 0 && (
+                        <div className="flex flex-col items-center justify-center h-full text-center mt-24">
+                            <div className="w-16 h-16 rounded-full bg-gray-100 flex items-center justify-center text-3xl">
+                                🤖
+                            </div>
 
-            <div className="mt-10 space-y-4">
-                {/* {results.map((item) => (
-                    <div key={item.id} className="border rounded p-4">
-                        <p className="text-sm text-gray-500">
-                            Similarity: {(item.similarity * 100).toFixed(2)}%
-                        </p>
+                            <h2 className="mt-6 text-3xl font-semibold text-gray-800">
+                                How can I help you today?
+                            </h2>
 
-                        <p className="mt-2">{item.content}</p>
-                    </div>
-                ))} */}
+                            <p className="mt-3 text-gray-500 max-w-xl">
+                                Ask anything about your uploaded documents and I
+                                will answer using your knowledge base.
+                            </p>
+                        </div>
+                    )}
 
-                {results && (
-                    <div className="bg-green-100 p-4">
-                        <p className="text-sm text-gray-800">
-                            <ReactMarkdown>{results}</ReactMarkdown>
-                        </p>
-                    </div>
-                )}
+                    {messages.map((message, index) => (
+                        <div
+                            key={index}
+                            className={`flex ${
+                                message.role === 'user'
+                                    ? 'justify-end'
+                                    : 'justify-start'
+                            }`}
+                        >
+                            <div
+                                className={`max-w-3xl rounded-2xl px-5 py-4 shadow-sm ${
+                                    message.role === 'user'
+                                        ? 'bg-black text-white'
+                                        : 'bg-gray-100 text-gray-900'
+                                }`}
+                            >
+                                <ReactMarkdown>{message.content}</ReactMarkdown>
+                            </div>
+                        </div>
+                    ))}
+
+                    {loading && (
+                        <div className="flex justify-start">
+                            <div className="bg-gray-100 rounded-2xl px-5 py-4 shadow-sm">
+                                <div className="flex items-center gap-2">
+                                    <div className="w-2 h-2 rounded-full bg-gray-400 animate-bounce" />
+                                    <div className="w-2 h-2 rounded-full bg-gray-400 animate-bounce delay-100" />
+                                    <div className="w-2 h-2 rounded-full bg-gray-400 animate-bounce delay-200" />
+                                </div>
+                            </div>
+                        </div>
+                    )}
+                </div>
+            </div>
+
+            {/* Input */}
+            <div className="border-t border-gray-200 bg-white px-6 py-5">
+                <div className="max-w-4xl mx-auto">
+                    <form
+                        onSubmit={handleSearch}
+                        className="relative rounded-3xl border border-gray-300 bg-white shadow-sm"
+                    >
+                        <textarea
+                            value={question}
+                            onChange={(e) => setQuestion(e.target.value)}
+                            placeholder="Message AI Assistant..."
+                            rows={1}
+                            className="w-full resize-none rounded-3xl bg-transparent px-6 py-5 pr-24 outline-none"
+                        />
+
+                        <button
+                            type="submit"
+                            disabled={loading || !question.trim()}
+                            className="absolute bottom-3 right-3 rounded-full bg-black px-6 py-2 text-white transition hover:bg-gray-800 disabled:cursor-not-allowed disabled:opacity-50"
+                        >
+                            Send
+                        </button>
+                    </form>
+
+                    <p className="mt-3 text-center text-xs text-gray-400">
+                        AI Assistant can make mistakes. Verify important
+                        information.
+                    </p>
+                </div>
             </div>
         </div>
     );

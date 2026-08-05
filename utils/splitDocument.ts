@@ -3,21 +3,29 @@ import { readFileSync } from 'fs';
 import path from 'path';
 
 export async function splitDocument(fileName: string) {
-    const filePath = path.join(
-        process.cwd(),
-        'public',
-        'rag_documents',
-        fileName,
-    );
+    try {
+        const filePath = path.join(
+            process.cwd(),
+            'public',
+            'rag_documents',
+            fileName,
+        );
 
-    const text = readFileSync(filePath, 'utf8');
+        if (!filePath) {
+            throw new Error('Please provide a valid file path and name');
+        }
 
-    const splitter = new RecursiveCharacterTextSplitter({
-        chunkSize: 150,
-        chunkOverlap: 15,
-    });
+        const text = readFileSync(filePath, 'utf8');
 
-    const output = await splitter.createDocuments([text]);
+        const splitter = new RecursiveCharacterTextSplitter({
+            chunkSize: 250,
+            chunkOverlap: 30,
+        });
 
-    return output;
+        const output = await splitter.createDocuments([text]);
+
+        return output;
+    } catch (error) {
+        console.error(error);
+    }
 }
