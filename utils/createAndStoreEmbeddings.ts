@@ -7,6 +7,10 @@ export async function createAndStoreEmbeddings(fileName: string) {
     const chunkData = await splitDocument(fileName);
     console.log(chunkData);
 
+    if (!chunkData || chunkData.length === 0) {
+        return [];
+    }
+
     const documents = await Promise.all(
         chunkData.map(async (chunk) => {
             const embeddingResponse = await openai.embeddings.create({
