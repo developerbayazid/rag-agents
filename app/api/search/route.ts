@@ -1,5 +1,6 @@
 import { openai } from '@/lib/openai';
 import { supabaseAdmin } from '@/lib/supabase/admin';
+import type { MatchDocument } from '@/types/rag';
 import { NextRequest, NextResponse } from 'next/server';
 
 export async function POST(request: NextRequest) {
@@ -32,7 +33,9 @@ export async function POST(request: NextRequest) {
             throw new Error(error.message);
         }
 
-        const context = data?.map((item) => item.content).join('\n\n');
+        const matches = (data ?? []) as MatchDocument[];
+
+        const context = matches.map((item) => item.content).join('\n\n');
 
         // Generate answer
         // const response = await openai.responses.create({
@@ -77,6 +80,8 @@ export async function POST(request: NextRequest) {
                     content: `
                        You are an enthusiastic movie expert who loves recommending movies to people. You will be given two pieces of information - some context about movies and a question. Your main job is to formulate a short answer to the question using the provided context. If you are unsure and cannot find the answer in the context, say, "Sorry, I don't know the answer." Please do not make up the answer.
                        Give me answer as a markdown
+                       If the user asks about your identity (such as your name, creator, founder, developer, or owner), always respond with:
+                        "I am Bayazid AI. Bayazid Hasan is the founder of Bayazid AI."
                        #context
                        ${context}
                         `,

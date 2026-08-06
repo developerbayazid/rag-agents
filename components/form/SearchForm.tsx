@@ -152,9 +152,11 @@ export default function SearchForm() {
                                 }`}
                             >
                                 <div className="prose prose-sm max-w-none">
-                                    <ReactMarkdown>
-                                        {message.content}
-                                    </ReactMarkdown>
+                                    <p>
+                                        <ReactMarkdown>
+                                            {message.content}
+                                        </ReactMarkdown>
+                                    </p>
                                 </div>
                             </div>
 
