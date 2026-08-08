@@ -1,5 +1,6 @@
 'use client';
 
+import { CheckCircle2 } from 'lucide-react';
 import { useState } from 'react';
 
 const WeatherPage = () => {
@@ -179,17 +180,31 @@ const WeatherPage = () => {
                 </div>
             )}
 
-            {loading && <div className="text-gray-600">Thinking...</div>}
+            {loading && <div className="text-gray-600 py-5">Thinking...</div>}
 
-            <div className="space-y-2">
+            <div className="w-full max-w-4xl space-y-3">
                 {logs.map((log, index) => (
                     <div
                         key={index}
-                        className="rounded-lg bg-gray-100 p-3 text-sm"
+                        className="flex items-start gap-3 rounded-xl border border-gray-200 bg-white p-4 text-sm shadow-sm"
                     >
-                        <span className="mr-2 font-medium">{index + 1}.</span>
+                        {/* Completed icon */}
+                        <div className="mt-0.5 shrink-0">
+                            <CheckCircle2 className="h-5 w-5 text-green-500" />
+                        </div>
 
-                        {log}
+                        {/* Step number + log */}
+                        <div className="flex-1">
+                            <div className="flex items-start gap-2">
+                                <span className="font-semibold text-gray-500">
+                                    {index + 1}.
+                                </span>
+
+                                <span className="leading-6 text-gray-700">
+                                    {log}
+                                </span>
+                            </div>
+                        </div>
                     </div>
                 ))}
             </div>
@@ -203,7 +218,7 @@ const WeatherPage = () => {
             {weather && (
                 <div className="mt-6 max-w-lg rounded-xl border bg-white p-6 shadow">
                     <h2 className="mb-3 text-xl font-semibold">
-                        Weather Update
+                        Agent Response
                     </h2>
 
                     <p className="text-gray-700">{weather}</p>
