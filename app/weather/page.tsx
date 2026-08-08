@@ -5,55 +5,101 @@ import { useState } from 'react';
 const WeatherPage = () => {
     const [weather, setWeather] = useState('');
     const [loading, setLoading] = useState(false);
-    const [logs, setLogs] = useState([]);
+    const [error, setError] = useState('');
+    const [logs, setLogs] = useState<string[]>([]);
 
     async function handleSubmit(e: React.FormEvent) {
         e.preventDefault();
+
         setLoading(true);
+        setError('');
+        setWeather('');
 
-        const response = await fetch('/api/agents/weather', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({
-                query: 'give me weather update for my location',
-            }),
-        });
+        try {
+            const response = await fetch('/api/agents/weather', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    query: 'give me weather update for Dhaka, Rampura',
+                }),
+            });
 
-        const data = await response.json();
+            const text = await response.text();
 
-        setLogs(data.logs);
-        // console.log(data.logs);
-        console.log(logs);
+            console.log('HTTP status:', response.status);
+            console.log('Raw response:', text);
 
-        setWeather(data.answer);
-        console.log(data);
-        setLoading(false);
+            if (!text) {
+                throw new Error(
+                    `Server returned an empty response. Status: ${response.status}`,
+                );
+            }
+
+            const data = JSON.parse(text);
+
+            if (!response.ok) {
+                throw new Error(data.error || 'Agent request failed');
+            }
+
+            console.log('Response:', data.response);
+            console.log('Logs:', data.logs);
+
+            setWeather(data.response);
+            setLogs(data.logs);
+        } catch (error) {
+            console.error('Frontend error:', error);
+
+            setError(
+                error instanceof Error ? error.message : 'Something went wrong',
+            );
+        } finally {
+            setLoading(false);
+        }
     }
 
     return (
-        <div className="flex flex-col justify-center items-center p-20">
-            {!loading && !weather && (
+        <div className="flex min-h-screen flex-col items-center justify-center p-20">
+            {!loading && !weather && !error && (
                 <button
-                    onClick={(e) => handleSubmit(e)}
-                    className="bg-black text-white p-4 hover:cursor-pointer"
+                    onClick={handleSubmit}
+                    className="rounded bg-black px-6 py-3 text-white hover:cursor-pointer"
                 >
                     Run Agent
                 </button>
             )}
 
-            {loading && <p>Thinking...</p>}
-            {logs.map((log, key) => (
-                <div
-                    key={key}
-                    className="flex flex-col p-4 justify-start items-start text-left"
-                >
-                    <p className="text-gray-600">{log}</p>
-                </div>
-            ))}
+            {loading && <div className="text-gray-600">Thinking...</div>}
 
-            {weather && <p>{weather}</p>}
+            <div className="space-y-2">
+                {logs.map((log, index) => (
+                    <div
+                        key={index}
+                        className="rounded-lg bg-gray-100 p-3 text-sm"
+                    >
+                        <span className="mr-2 font-medium">{index + 1}.</span>
+
+                        {log}
+                    </div>
+                ))}
+            </div>
+
+            {error && (
+                <div className="mt-6 max-w-lg rounded-lg border border-red-200 bg-red-50 p-4 text-red-700">
+                    <strong>Error:</strong> {error}
+                </div>
+            )}
+
+            {weather && (
+                <div className="mt-6 max-w-lg rounded-xl border bg-white p-6 shadow">
+                    <h2 className="mb-3 text-xl font-semibold">
+                        Weather Update
+                    </h2>
+
+                    <p className="text-gray-700">{weather}</p>
+                </div>
+            )}
         </div>
     );
 };
