@@ -1,7 +1,10 @@
 import { openai } from '@/lib/openai';
 import { getCurrentWeather, getLocation, getTools } from '@/tools/tools';
 
-export async function weatherAgent2(query: string) {
+export async function weatherAgent2(
+    query: string,
+    onLog: (message: string) => void,
+) {
     const logs: string[] = [];
 
     const MAX_ITERATIONS = 5;
@@ -26,7 +29,7 @@ export async function weatherAgent2(query: string) {
     });
 
     for (let i = 0; i < MAX_ITERATIONS; i++) {
-        logs.push(`Iteration ${i + 1}`);
+        onLog(`Iteration ${i + 1}`);
 
         const toolCalls = response.output.filter(
             (item) => item.type === 'function_call',
@@ -34,7 +37,7 @@ export async function weatherAgent2(query: string) {
 
         // No tool call = agent has finished
         if (toolCalls.length === 0) {
-            logs.push('Agent finished');
+            onLog('Agent finished');
 
             return {
                 response: response.output_text,
@@ -47,7 +50,7 @@ export async function weatherAgent2(query: string) {
         for (const toolCall of toolCalls) {
             const args = JSON.parse(toolCall.arguments);
 
-            logs.push(
+            onLog(
                 `Calling ${toolCall.name} with arguments: ${JSON.stringify(args)}`,
             );
 
@@ -66,7 +69,7 @@ export async function weatherAgent2(query: string) {
                     throw new Error(`Unknown tool: ${toolCall.name}`);
             }
 
-            logs.push(`${toolCall.name} returned: ${result}`);
+            onLog(`${toolCall.name} returned: ${result}`);
 
             toolOutputs.push({
                 type: 'function_call_output' as const,

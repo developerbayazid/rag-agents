@@ -1,24 +1,60 @@
 import { weatherAgent2 } from '@/utils/agents/weather2';
-import { NextRequest, NextResponse } from 'next/server';
+import { NextRequest } from 'next/server';
 
 export async function POST(request: NextRequest) {
-    try {
-        const { query } = await request.json();
+    const { query } = await request.json();
 
-        const result = await weatherAgent2(query);
+    const encoder = new TextEncoder();
 
-        return NextResponse.json({
-            response: result.response,
-            logs: result.logs,
-        });
-    } catch (error) {
-        console.error('WEATHER AGENT ERROR:', error);
+    const stream = new ReadableStream({
+        async start(controller) {
+            const sendLog = (message: string) => {
+                controller.enqueue(
+                    encoder.encode(
+                        `data: ${JSON.stringify({
+                            type: 'log',
+                            message,
+                        })}\n\n`,
+                    ),
+                );
+            };
 
-        return NextResponse.json(
-            {
-                error: error instanceof Error ? error.message : String(error),
-            },
-            { status: 500 },
-        );
-    }
+            try {
+                const result = await weatherAgent2(query, sendLog);
+
+                controller.enqueue(
+                    encoder.encode(
+                        `data: ${JSON.stringify({
+                            type: 'answer',
+                            message: result.response,
+                        })}\n\n`,
+                    ),
+                );
+
+                controller.close();
+            } catch (error) {
+                controller.enqueue(
+                    encoder.encode(
+                        `data: ${JSON.stringify({
+                            type: 'error',
+                            message:
+                                error instanceof Error
+                                    ? error.message
+                                    : 'Something went wrong',
+                        })}\n\n`,
+                    ),
+                );
+
+                controller.close();
+            }
+        },
+    });
+
+    return new Response(stream, {
+        headers: {
+            'Content-Type': 'text/event-stream',
+            'Cache-Control': 'no-cache',
+            Connection: 'keep-alive',
+        },
+    });
 }
